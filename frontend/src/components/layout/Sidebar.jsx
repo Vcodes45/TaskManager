@@ -1,0 +1,185 @@
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { useAppStore } from '../../store/useAppStore';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  FiHome, FiList, FiLayout, FiCalendar, FiPieChart, 
+  FiClock, FiSettings, FiUser, FiInfo, FiLogOut, FiMenu, FiX, FiSun, FiMoon 
+} from 'react-icons/fi';
+
+export default function Sidebar() {
+  const { user, logout } = useAuth();
+  const location = useLocation();
+  const { isSidebarOpen, toggleSidebar, settings, updateSettings } = useAppStore();
+
+  const navItems = [
+    { name: 'Dashboard', path: '/', icon: FiHome },
+    { name: 'Kanban Board', path: '/kanban', icon: FiLayout },
+    { name: 'Calendar', path: '/calendar', icon: FiCalendar },
+    { name: 'Analytics', path: '/analytics', icon: FiPieChart },
+    { name: 'Focus Mode', path: '/focus', icon: FiClock },
+  ];
+
+  const bottomItems = [
+    { name: 'Settings', path: '/settings', icon: FiSettings },
+    { name: 'Profile', path: '/profile', icon: FiUser },
+    { name: 'About', path: '/about', icon: FiInfo },
+  ];
+
+  const NavLink = ({ item }) => {
+    const isActive = location.pathname === item.path || 
+                     (item.path !== '/' && location.pathname.startsWith(item.path));
+    
+    return (
+      <Link
+        to={item.path}
+        className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 relative group
+          ${isActive 
+            ? 'text-[var(--color-text-primary)] font-medium bg-[var(--color-text-primary)]/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]' 
+            : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/5'
+          }`}
+      >
+        <item.icon className={`w-5 h-5 ${isActive ? 'text-[var(--color-primary)]' : 'group-hover:text-[var(--color-primary)] transition-colors'}`} />
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <motion.span
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
+              className="whitespace-nowrap overflow-hidden"
+            >
+              {item.name}
+            </motion.span>
+          )}
+        </AnimatePresence>
+        {isActive && (
+          <motion.div 
+            layoutId="activeTab" 
+            className="absolute left-0 w-1 h-8 bg-[var(--color-primary)] rounded-r-full"
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          />
+        )}
+      </Link>
+    );
+  };
+
+  return (
+    <>
+      {/* Mobile Toggle Button */}
+      <button 
+        onClick={toggleSidebar}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-surface-elevated glass border border-[var(--color-border-light)] text-[var(--color-text-primary)]"
+      >
+        {isSidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+      </button>
+
+      {/* Sidebar Container */}
+      <motion.aside
+        initial={false}
+        animate={{ 
+          width: isSidebarOpen ? 260 : 80,
+          x: isSidebarOpen ? 0 : (window.innerWidth < 1024 ? -100 : 0) // Hide entirely on mobile when closed
+        }}
+        className={`fixed lg:sticky top-0 left-0 h-screen z-40
+          glass bg-surface-elevated/80 border-r border-[var(--color-border-light)] 
+          flex flex-col justify-between py-6 px-3
+          transition-all duration-300 ease-in-out
+          ${!isSidebarOpen && 'lg:items-center'}`}
+      >
+        <div className="flex flex-col space-y-8">
+          {/* Logo Area */}
+          <div className={`flex items-center ${isSidebarOpen ? 'px-4' : 'justify-center'} h-12`}>
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex items-center justify-center text-[var(--color-text-primary)] font-bold text-xl shrink-0 border-2 border-surface shadow-lg">
+              {user?.profile_picture ? (
+                <img src={user.profile_picture} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                user?.name?.charAt(0) || 'U'
+              )}
+            </div>
+            <AnimatePresence>
+              {isSidebarOpen && (
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="ml-3 text-lg font-bold text-[var(--color-text-primary)] whitespace-nowrap overflow-hidden"
+                >
+                  {user?.name || 'User'}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Main Navigation */}
+          <nav className="flex flex-col space-y-2">
+            {navItems.map((item) => (
+              <NavLink key={item.path} item={item} />
+            ))}
+          </nav>
+        </div>
+
+        {/* Bottom Navigation */}
+        <div className="flex flex-col space-y-2 pt-8 border-t border-[var(--color-border-light)]">
+          {bottomItems.map((item) => (
+            <NavLink key={item.path} item={item} />
+          ))}
+
+          <button
+            onClick={() => updateSettings({ theme: settings?.theme === 'dark' ? 'light' : 'dark' })}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/5 ${!isSidebarOpen && 'justify-center'}`}
+          >
+            {settings?.theme === 'dark' ? (
+              <FiSun className="w-5 h-5 shrink-0" />
+            ) : (
+              <FiMoon className="w-5 h-5 shrink-0" />
+            )}
+            <AnimatePresence>
+              {isSidebarOpen && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  className="whitespace-nowrap overflow-hidden"
+                >
+                  {settings?.theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+
+          <button
+            onClick={logout}
+            className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 text-[var(--color-danger)] hover:text-[var(--color-danger)] hover:bg-[var(--color-danger-dim)] ${!isSidebarOpen && 'justify-center'}`}
+          >
+            <FiLogOut className="w-5 h-5 shrink-0" />
+            <AnimatePresence>
+              {isSidebarOpen && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  className="whitespace-nowrap overflow-hidden"
+                >
+                  Logout
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </div>
+      </motion.aside>
+      
+      {/* Mobile Backdrop */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={toggleSidebar}
+            className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
+          />
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
