@@ -6,6 +6,7 @@ import {
   FiHome, FiList, FiLayout, FiCalendar, FiPieChart, 
   FiClock, FiSettings, FiUser, FiInfo, FiLogOut, FiMenu, FiX, FiSun, FiMoon 
 } from 'react-icons/fi';
+import logo from '../../assets/logo.jpg';
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
@@ -15,7 +16,6 @@ export default function Sidebar() {
   const navItems = [
     { name: 'Dashboard', path: '/', icon: FiHome },
     { name: 'Kanban Board', path: '/kanban', icon: FiLayout },
-    { name: 'Calendar', path: '/calendar', icon: FiCalendar },
     { name: 'Analytics', path: '/analytics', icon: FiPieChart },
     { name: 'Focus Mode', path: '/focus', icon: FiClock },
   ];
@@ -86,10 +86,29 @@ export default function Sidebar() {
           transition-all duration-300 ease-in-out
           ${!isSidebarOpen && 'lg:items-center'}`}
       >
-        <div className="flex flex-col space-y-8">
-          {/* Logo Area */}
-          <div className={`flex items-center ${isSidebarOpen ? 'px-4' : 'justify-center'} h-12`}>
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex items-center justify-center text-[var(--color-text-primary)] font-bold text-xl shrink-0 border-2 border-surface shadow-lg">
+        <div className="flex flex-col space-y-6">
+          {/* App Brand Logo */}
+          <div className={`flex items-center ${isSidebarOpen ? 'px-4 gap-3' : 'justify-center'} h-12`}>
+            <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-[var(--color-border-light)] shadow-sm">
+              <img src={logo} alt="Kal Se Logo" className="w-full h-full object-cover" />
+            </div>
+            <AnimatePresence>
+              {isSidebarOpen && (
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="text-xl font-bold text-[var(--color-text-primary)] tracking-tight whitespace-nowrap overflow-hidden"
+                >
+                  Kal Se
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* User Profile Area */}
+          <div className={`flex items-center ${isSidebarOpen ? 'px-4' : 'justify-center'}`}>
+            <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)] flex items-center justify-center text-[var(--color-text-primary)] font-bold text-sm shrink-0 border border-surface shadow-sm">
               {user?.profile_picture ? (
                 <img src={user.profile_picture} alt="Profile" className="w-full h-full object-cover" />
               ) : (
@@ -102,7 +121,7 @@ export default function Sidebar() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
-                  className="ml-3 text-lg font-bold text-[var(--color-text-primary)] whitespace-nowrap overflow-hidden"
+                  className="ml-3 text-sm font-medium text-[var(--color-text-secondary)] whitespace-nowrap overflow-hidden"
                 >
                   {user?.name || 'User'}
                 </motion.span>

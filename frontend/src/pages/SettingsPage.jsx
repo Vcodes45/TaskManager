@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useAppStore } from '../store/useAppStore';
 import GlassCard from '../components/ui/GlassCard';
-import { FiMonitor, FiUser, FiBell, FiShield, FiCheck } from 'react-icons/fi';
+import { FiMonitor, FiUser, FiBell, FiShield, FiCheck, FiCalendar } from 'react-icons/fi';
+import { useGoogleLogin } from '@react-oauth/google';
+import api from '../services/api';
 
 const themes = [
   { id: 'dark', name: 'Dark Mode', color: '#0a0a0f' },
@@ -16,9 +18,33 @@ const themes = [
 ];
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user, fetchProfile } = useAuth();
   const { settings, updateSettings } = useAppStore();
   const [activeTab, setActiveTab] = useState('appearance');
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [calendarConnected, setCalendarConnected] = useState(!!user?.settings?.google_refresh_token);
+
+  const googleLogin = useGoogleLogin({
+    flow: 'auth-code',
+    scope: 'https://www.googleapis.com/auth/calendar.events',
+    prompt: 'consent',
+    onSuccess: async (codeResponse) => {
+      try {
+        setIsConnecting(true);
+        const res = await api.post(`/calendar/connect?auth_code=${codeResponse.code}`);
+        if (res.data.has_refresh_token) {
+          setCalendarConnected(true);
+          if (fetchProfile) fetchProfile(); // Update user object in AuthContext
+          alert('Google Calendar connected successfully!');
+        }
+      } catch (error) {
+        alert('Failed to connect Google Calendar: ' + (error.response?.data?.detail || error.message));
+      } finally {
+        setIsConnecting(false);
+      }
+    },
+    onError: errorResponse => console.log(errorResponse),
+  });
 
   return (
     <div className="pb-12 max-w-5xl mx-auto">
@@ -134,6 +160,28 @@ export default function SettingsPage() {
                   <div>
                     <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-1">Email Address</label>
                     <input type="email" readOnly value={user?.email || ''} className="bg-surface border border-[var(--color-border-light)] rounded-lg px-4 py-2 w-full opacity-70" />
+                  </div>
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-[var(--color-border-light)]">
+                  <h3 className="text-lg font-bold mb-4">Integrations</h3>
+                  <div className="flex items-center justify-between p-4 border border-[var(--color-border-light)] rounded-xl bg-surface">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                        <FiCalendar size={20} />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-[var(--color-text-primary)]">Google Calendar</h4>
+                        <p className="text-sm text-[var(--color-text-secondary)]">Sync tasks directly to your calendar</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => googleLogin()}
+                      disabled={isConnecting || calendarConnected}
+                      className="px-4 py-2 rounded-lg bg-[var(--color-primary)] text-white font-medium hover:opacity-90 disabled:opacity-50 transition-all"
+                    >
+                      {isConnecting ? 'Connecting...' : calendarConnected ? 'Connected' : 'Connect'}
+                    </button>
                   </div>
                 </div>
               </GlassCard>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlay, FiPause, FiRotateCcw, FiCoffee, FiMonitor, FiSettings } from 'react-icons/fi';
 import { useAppStore } from '../store/useAppStore';
+import api from '../services/api';
 
 const quotes = [
   "Deep work is the superpower of the 21st century.",
@@ -39,14 +40,51 @@ export default function FocusModePage() {
     return () => clearInterval(timerRef.current);
   }, [pomodoroState.isRunning, pomodoroState.timeLeft]);
 
-  const handleTimerComplete = () => {
-    // Play sound if enabled
+  const playAlarm = () => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      
+      const playBeep = (time, freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time);
+        
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.5, time + 0.1);
+        gain.gain.linearRampToValueAtTime(0, time + 0.3);
+        
+        osc.start(time);
+        osc.stop(time + 0.4);
+      };
+
+      const now = ctx.currentTime;
+      playBeep(now, 800);
+      playBeep(now + 0.4, 800);
+      playBeep(now + 0.8, 1200);
+    } catch (e) {
+      console.error('Audio API error', e);
+    }
+  };
+
+  const handleTimerComplete = async () => {
     if (settings.soundEnabled) {
-      const audio = new Audio('/notification.mp3'); // Assuming standard browser beep or file exists
-      audio.play().catch(() => {});
+      playAlarm();
     }
 
     if (pomodoroState.mode === 'focus') {
+      try {
+        // Log focus time to backend
+        await api.post('/gamification/focus/complete', { duration: settings.workDuration });
+      } catch (error) {
+        console.error('Failed to log focus session:', error);
+      }
+
       const newCompleted = pomodoroState.completedPomodoros + 1;
       const nextMode = newCompleted % 4 === 0 ? 'longBreak' : 'shortBreak';
       updatePomodoro({

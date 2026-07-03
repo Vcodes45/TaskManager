@@ -49,6 +49,7 @@ class Task(Base):
     is_archived = Column(Integer, default=0, nullable=False) # SQLite doesn't natively support booleans without mapping, integer is safer or Boolean
     is_pinned = Column(Integer, default=0, nullable=False)
     subtasks = Column(JSON, nullable=True, default=[]) # Array of dicts: [{"id": 1, "title": "do this", "completed": false}]
+    google_event_id = Column(String(255), nullable=True)
 
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)

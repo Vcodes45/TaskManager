@@ -44,9 +44,24 @@ export const useAppStore = create(
         longBreakDuration: 15,
       },
       updateSettings: (newSettings) =>
-        set((state) => ({
-          settings: { ...state.settings, ...newSettings }
-        })),
+        set((state) => {
+          let newPomodoroState = { ...state.pomodoroState };
+          
+          if (!state.pomodoroState.isRunning) {
+            if (newSettings.workDuration !== undefined && state.pomodoroState.mode === 'focus') {
+              newPomodoroState.timeLeft = newSettings.workDuration * 60;
+            } else if (newSettings.shortBreakDuration !== undefined && state.pomodoroState.mode === 'shortBreak') {
+              newPomodoroState.timeLeft = newSettings.shortBreakDuration * 60;
+            } else if (newSettings.longBreakDuration !== undefined && state.pomodoroState.mode === 'longBreak') {
+              newPomodoroState.timeLeft = newSettings.longBreakDuration * 60;
+            }
+          }
+          
+          return {
+            settings: { ...state.settings, ...newSettings },
+            pomodoroState: newPomodoroState
+          };
+        }),
     }),
     {
       name: 'taskmanager-app-storage',

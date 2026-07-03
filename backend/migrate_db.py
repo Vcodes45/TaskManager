@@ -37,6 +37,7 @@ def run_migrations():
             conn.execute(text("ALTER TABLE tasks ADD COLUMN IF NOT EXISTS is_archived INTEGER DEFAULT 0 NOT NULL;"))
             conn.execute(text("ALTER TABLE tasks ADD COLUMN IF NOT EXISTS is_pinned INTEGER DEFAULT 0 NOT NULL;"))
             conn.execute(text("ALTER TABLE tasks ADD COLUMN IF NOT EXISTS subtasks JSON DEFAULT '[]';"))
+            conn.execute(text("ALTER TABLE tasks ADD COLUMN IF NOT EXISTS google_event_id VARCHAR(255);"))
             print("Upgraded tasks table.")
         except Exception as e:
             print(f"Error upgrading tasks table: {e}")

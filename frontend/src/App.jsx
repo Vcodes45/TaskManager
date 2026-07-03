@@ -12,7 +12,6 @@ import Dashboard from './pages/Dashboard';
 import CreateTaskPage from './pages/CreateTaskPage';
 import EditTaskPage from './pages/EditTaskPage';
 import KanbanPage from './pages/KanbanPage';
-import CalendarPage from './pages/CalendarPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import FocusModePage from './pages/FocusModePage';
 import SettingsPage from './pages/SettingsPage';
@@ -50,7 +49,6 @@ export default function App() {
                   <Route path="/tasks/new" element={<CreateTaskPage />} />
                   <Route path="/tasks/:id/edit" element={<EditTaskPage />} />
                   <Route path="/kanban" element={<KanbanPage />} />
-                  <Route path="/calendar" element={<CalendarPage />} />
                   <Route path="/analytics" element={<AnalyticsPage />} />
                   <Route path="/focus" element={<FocusModePage />} />
                   <Route path="/settings" element={<SettingsPage />} />

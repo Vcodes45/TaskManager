@@ -37,7 +37,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-from routes import auth, tasks, ai, stats, gamification, activities, notes
+from routes import auth, tasks, ai, stats, gamification, activities, notes, calendar
 
 # Include routers
 app.include_router(auth.router)
@@ -47,6 +47,7 @@ app.include_router(stats.router)
 app.include_router(gamification.router)
 app.include_router(activities.router)
 app.include_router(notes.router)
+app.include_router(calendar.router)
 
 
 @app.get("/", tags=["Health"])

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 from database.connection import get_db
@@ -66,6 +66,7 @@ def get_tasks(
 
 
 from models.productivity import Activity, ActivityType
+from services.calendar_sync import sync_task_to_google_calendar, delete_task_from_google_calendar
 
 def check_level_up(user: User):
     new_level = (user.xp // 100) + 1
@@ -77,6 +78,7 @@ def check_level_up(user: User):
 @router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 def create_task(
     task_data: TaskCreate,
+    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -100,12 +102,16 @@ def create_task(
     
     db.commit()
     db.refresh(new_task)
+    
+    background_tasks.add_task(sync_task_to_google_calendar, new_task, current_user, db)
+    
     return new_task
 
 @router.put("/{task_id}", response_model=TaskResponse)
 def update_task(
     task_id: int,
     task_data: TaskUpdate,
+    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -122,11 +128,15 @@ def update_task(
 
     db.commit()
     db.refresh(task)
+    
+    background_tasks.add_task(sync_task_to_google_calendar, task, current_user, db)
+    
     return task
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(
     task_id: int,
+    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -136,6 +146,9 @@ def delete_task(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
     db.add(Activity(user_id=current_user.id, activity_type=ActivityType.TASK_DELETED, description=f"Deleted task: {task.title}"))
+    
+    background_tasks.add_task(delete_task_from_google_calendar, task, current_user, db)
+    
     db.delete(task)
     db.commit()
 

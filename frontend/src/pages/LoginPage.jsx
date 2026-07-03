@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { FiLogIn } from 'react-icons/fi';
+import logo from '../assets/logo.jpg';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -54,8 +55,8 @@ export default function LoginPage() {
       <div className="glass-strong rounded-2xl w-full max-w-sm p-8 animate-fade-in relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-accent-dim flex items-center justify-center mx-auto mb-4">
-            <FiLogIn className="text-accent text-xl" />
+          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-accent-dim flex items-center justify-center mx-auto mb-4 border border-[var(--color-border-light)] shadow-sm">
+            <img src={logo} alt="Kal Se Logo" className="w-full h-full object-cover" />
           </div>
           <h2 className="text-2xl font-bold text-text-primary mb-1">Welcome Back</h2>
           <p className="text-text-muted text-sm">Sign in to your Kal Se account</p>
