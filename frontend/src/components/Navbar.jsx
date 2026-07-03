@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { FiCheckSquare, FiLogOut, FiHome, FiPlus, FiMenu, FiX, FiSun, FiMoon } from 'react-icons/fi';
+import logo from '../assets/logo.jpg';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -28,8 +29,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Brand */}
           <Link to="/" className="flex items-center gap-2 no-underline">
-            <FiCheckSquare className="text-accent text-xl" />
-            <span className="text-text-primary font-bold text-lg tracking-tight">TaskAI</span>
+            <img src={logo} alt="Kal Se Logo" className="h-8 w-8 rounded-lg object-cover" />
+            <span className="text-text-primary font-bold text-lg tracking-tight">Kal Se</span>
           </Link>
 
           {/* Desktop Nav */}

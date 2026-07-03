@@ -58,7 +58,7 @@ export default function LoginPage() {
             <FiLogIn className="text-accent text-xl" />
           </div>
           <h2 className="text-2xl font-bold text-text-primary mb-1">Welcome Back</h2>
-          <p className="text-text-muted text-sm">Sign in to your TaskAI account</p>
+          <p className="text-text-muted text-sm">Sign in to your Kal Se account</p>
         </div>
 
         {error && (

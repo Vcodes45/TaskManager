@@ -71,7 +71,7 @@ export default function RegisterPage() {
             <FiUserPlus className="text-accent text-xl" />
           </div>
           <h2 className="text-2xl font-bold text-text-primary mb-1">Create Account</h2>
-          <p className="text-text-muted text-sm">Get started with TaskAI today</p>
+          <p className="text-text-muted text-sm">Get started with Kal Se today</p>
         </div>
 
         {error && (

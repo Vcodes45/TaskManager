@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="text-text-muted text-sm">
-            © {currentYear} <span className="font-semibold text-text-secondary">TaskAI</span>. All rights reserved.
+            © {currentYear} <span className="font-semibold text-text-secondary">Kal Se</span>. All rights reserved.
           </span>
           <div className="flex items-center gap-4 text-sm">
             <a

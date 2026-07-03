@@ -20,6 +20,7 @@ import AchievementsPage from './pages/AchievementsPage';
 import ActivityPage from './pages/ActivityPage';
 import NotesPage from './pages/NotesPage';
 import ProfilePage from './pages/ProfilePage';
+import AboutPage from './pages/AboutPage';
 
 export default function App() {
   const { isAuthenticated } = useAuth();
@@ -61,7 +62,7 @@ export default function App() {
                   <Route path="/notes" element={<NotesPage />} />
                   
                   {/* Extra Pages */}
-                  <Route path="/about" element={<div className="p-8 text-center text-[var(--color-text-secondary)]">About Page (Coming Soon)</div>} />
+                  <Route path="/about" element={<AboutPage />} />
                   
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
