@@ -7,6 +7,7 @@ import {
   FiClock, FiSettings, FiUser, FiInfo, FiLogOut, FiMenu, FiX, FiSun, FiMoon 
 } from 'react-icons/fi';
 import logo from '../../assets/logo.jpg';
+import NotificationBell from './NotificationBell';
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
@@ -127,6 +128,11 @@ export default function Sidebar() {
                 </motion.span>
               )}
             </AnimatePresence>
+          </div>
+
+          {/* Notification Bell */}
+          <div className={`flex ${isSidebarOpen ? 'px-4' : 'justify-center'}`}>
+            <NotificationBell />
           </div>
 
           {/* Main Navigation */}

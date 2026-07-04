@@ -44,6 +44,9 @@ class TaskResponse(BaseModel):
     priority: Optional[str] = None
     priority_reason: Optional[str] = None
     improved_description: Optional[str] = None
+    ai_actionable_steps: Optional[list] = None
+    ai_estimated_time: Optional[str] = None
+    ai_potential_roadblocks: Optional[str] = None
     is_archived: int
     is_pinned: int
     subtasks: list
@@ -61,3 +64,6 @@ class AIAnalysisResponse(BaseModel):
     priority: str
     priority_reason: str
     improved_description: str
+    ai_actionable_steps: list
+    ai_estimated_time: str
+    ai_potential_roadblocks: str

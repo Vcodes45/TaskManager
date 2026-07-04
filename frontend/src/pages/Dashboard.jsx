@@ -24,7 +24,11 @@ const quotes = [
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { updateUserStats } = useAppStore();
+  const { 
+    updateUserStats,
+    tasks, tasksLoaded, setTasks, fetchTasks,
+    dashboardStats: stats, dashboardStatsLoaded: statsLoaded, setDashboardStats: setStats, fetchDashboardStats 
+  } = useAppStore();
   
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -32,15 +36,11 @@ export default function Dashboard() {
     if (hour < 18) return 'Good afternoon';
     return 'Good evening';
   };
-  // Dashboard Stats State
-  const [stats, setStats] = useState(null);
-  const [statsLoading, setStatsLoading] = useState(true);
+  
+  // Local state for fetching status to avoid full-page spinner if already cached
+  const [isFetching, setIsFetching] = useState(!tasksLoaded || !statsLoaded);
   const [quote] = useState(() => quotes[Math.floor(Math.random() * quotes.length)]);
 
-  // Tasks State
-  const [tasks, setTasks] = useState([]);
-  const [tasksLoading, setTasksLoading] = useState(true);
-  
   // Tasks Filtering & Sorting State
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all'); // all, today, tomorrow, week, overdue, completed, archived, high, medium, low
@@ -64,32 +64,32 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const [statsData, tasksData] = await Promise.all([
-          statsService.getDashboardStats(),
-          taskService.getTasks()
-        ]);
-        
-        setStats(statsData);
-        setTasks(tasksData);
-        
-        // Sync gamification state to global store
-        updateUserStats({
-          xp: statsData.user.xp,
-          level: statsData.user.level,
-          current_streak: statsData.user.current_streak,
-          longest_streak: statsData.user.longest_streak
-        });
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      } finally {
-        setStatsLoading(false);
-        setTasksLoading(false);
+    async function loadData() {
+      setIsFetching(true);
+      
+      const promises = [];
+      if (!statsLoaded) promises.push(fetchDashboardStats(statsService));
+      if (!tasksLoaded) promises.push(fetchTasks(taskService));
+      
+      if (promises.length > 0) {
+        await Promise.all(promises);
       }
+      setIsFetching(false);
     }
-    fetchData();
-  }, [updateUserStats]);
+    loadData();
+  }, [statsLoaded, tasksLoaded, fetchDashboardStats, fetchTasks]);
+
+  // Sync user stats to global layout state when stats load
+  useEffect(() => {
+    if (stats) {
+      updateUserStats({
+        xp: stats.user.xp,
+        level: stats.user.level,
+        current_streak: stats.user.current_streak,
+        longest_streak: stats.user.longest_streak
+      });
+    }
+  }, [stats, updateUserStats]);
 
   // Tasks Methods
   const handleDelete = async (id) => {
@@ -123,6 +123,17 @@ export default function Dashboard() {
       await taskService.updateTask(task.id, { status: newStatus });
       setTasks(tasks.map((t) => t.id === task.id ? { ...t, status: newStatus } : t));
       
+      // Instantly update stats on dashboard
+      if (stats) {
+        setStats(prev => ({
+          ...prev,
+          tasks: {
+            ...prev.tasks,
+            completed: prev.tasks.completed + (newStatus === 'Completed' ? 1 : -1)
+          }
+        }));
+      }
+
       if (newStatus === 'Completed') {
         confetti({
           particleCount: 100,
@@ -164,7 +175,16 @@ export default function Dashboard() {
       if (action === 'delete') {
         setTasks(tasks.filter(t => !selectedTasks.has(t.id)));
       } else if (action === 'complete') {
+        const newlyCompletedCount = tasks.filter(t => selectedTasks.has(t.id) && t.status !== 'Completed').length;
         setTasks(tasks.map(t => selectedTasks.has(t.id) ? { ...t, status: 'Completed' } : t));
+        
+        if (stats && newlyCompletedCount > 0) {
+          setStats(prev => ({
+            ...prev,
+            tasks: { ...prev.tasks, completed: prev.tasks.completed + newlyCompletedCount }
+          }));
+        }
+        
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       } else if (action === 'archive') {
         setTasks(tasks.map(t => selectedTasks.has(t.id) ? { ...t, is_archived: 1 } : t));
@@ -225,13 +245,15 @@ export default function Dashboard() {
     return result;
   }, [tasks, search, filter, sortBy]);
 
-  if (statsLoading || tasksLoading || !stats) {
+  if (isFetching && (!stats || tasks.length === 0)) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
+
+  if (!stats) return null;
 
   const progress = stats.tasks.completion_percentage;
 
@@ -509,11 +531,33 @@ export default function Dashboard() {
                             className="overflow-hidden"
                           >
                             <div className="bg-[var(--color-purple-dim)] border border-[var(--color-purple)]/30 rounded-xl p-4 mt-2">
-                              {task.summary && <p className="text-xs text-[var(--color-text-secondary)] mb-2">{task.summary}</p>}
-                              <div className="flex gap-2">
-                                {task.category && <span className="text-[10px] px-2 py-1 bg-[var(--color-purple-dim)] text-[var(--color-purple)] rounded">Category: {task.category}</span>}
-                                {task.priority && <span className="text-[10px] px-2 py-1 bg-[var(--color-purple-dim)] text-[var(--color-purple)] rounded">Priority: {task.priority}</span>}
+                              {task.summary && <p className="text-xs text-[var(--color-text-secondary)] mb-3">{task.summary}</p>}
+                              
+                              <div className="flex flex-wrap gap-2 mb-3">
+                                {task.category && <span className="text-[10px] px-2 py-1 bg-[var(--color-purple-dim)] text-[var(--color-purple)] border border-[var(--color-purple)]/20 rounded">Category: {task.category}</span>}
+                                {task.priority && <span className="text-[10px] px-2 py-1 bg-[var(--color-purple-dim)] text-[var(--color-purple)] border border-[var(--color-purple)]/20 rounded">Priority: {task.priority}</span>}
+                                {task.ai_estimated_time && <span className="text-[10px] px-2 py-1 bg-[var(--color-purple-dim)] text-[var(--color-purple)] border border-[var(--color-purple)]/20 rounded flex items-center gap-1"><FiClock size={10} /> {task.ai_estimated_time}</span>}
                               </div>
+
+                              {task.ai_actionable_steps && task.ai_actionable_steps.length > 0 && (
+                                <div className="mb-3">
+                                  <h4 className="text-[11px] font-semibold text-[var(--color-purple)] mb-1 uppercase tracking-wider">Actionable Steps</h4>
+                                  <ul className="space-y-1">
+                                    {task.ai_actionable_steps.map((step, idx) => (
+                                      <li key={idx} className="text-xs text-[var(--color-text-secondary)] flex items-start gap-1.5">
+                                        <span className="text-[var(--color-purple)] mt-0.5">•</span> {step}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {task.ai_potential_roadblocks && (
+                                <div>
+                                  <h4 className="text-[11px] font-semibold text-[var(--color-purple)] mb-1 uppercase tracking-wider">Potential Roadblocks</h4>
+                                  <p className="text-xs text-[var(--color-text-secondary)]">{task.ai_potential_roadblocks}</p>
+                                </div>
+                              )}
                             </div>
                           </motion.div>
                         )}

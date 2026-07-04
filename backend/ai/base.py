@@ -10,6 +10,9 @@ class AIAnalysisResult:
     priority: str
     priority_reason: str
     improved_description: str
+    ai_actionable_steps: list
+    ai_estimated_time: str
+    ai_potential_roadblocks: str
 
 
 class AIService(ABC):

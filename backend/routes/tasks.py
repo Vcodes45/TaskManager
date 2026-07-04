@@ -67,6 +67,7 @@ def get_tasks(
 
 from models.productivity import Activity, ActivityType
 from services.calendar_sync import sync_task_to_google_calendar, delete_task_from_google_calendar
+from services.email import notify_task_created, notify_task_completed, notify_task_deleted
 
 def check_level_up(user: User):
     new_level = (user.xp // 100) + 1
@@ -104,6 +105,11 @@ def create_task(
     db.refresh(new_task)
     
     background_tasks.add_task(sync_task_to_google_calendar, new_task, current_user, db)
+    background_tasks.add_task(
+        notify_task_created,
+        current_user.email, current_user.name, current_user.id,
+        new_task.title, new_task.priority, str(new_task.due_date) if new_task.due_date else None, new_task.description
+    )
     
     return new_task
 
@@ -145,9 +151,11 @@ def delete_task(
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
-    db.add(Activity(user_id=current_user.id, activity_type=ActivityType.TASK_DELETED, description=f"Deleted task: {task.title}"))
+    task_title = task.title
+    db.add(Activity(user_id=current_user.id, activity_type=ActivityType.TASK_DELETED, description=f"Deleted task: {task_title}"))
     
     background_tasks.add_task(delete_task_from_google_calendar, task, current_user, db)
+    background_tasks.add_task(notify_task_deleted, current_user.id, task_title)
     
     db.delete(task)
     db.commit()
@@ -168,9 +176,13 @@ def toggle_complete(
         current_user.xp += 10
         check_level_up(current_user)
         db.add(Activity(user_id=current_user.id, activity_type=ActivityType.TASK_COMPLETED, description=f"Completed task: {task.title}"))
+        db.commit()
+        db.refresh(task)
+        # Send completion email + in-app notification in background
+        notify_task_completed(current_user.email, current_user.name, current_user.id, task.title)
     else:
         task.status = "Pending"
+        db.commit()
+        db.refresh(task)
         
-    db.commit()
-    db.refresh(task)
     return task

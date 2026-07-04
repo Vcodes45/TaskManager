@@ -42,6 +42,9 @@ async def analyze_task(
         task.priority = result.priority
         task.priority_reason = result.priority_reason
         task.improved_description = result.improved_description
+        task.ai_actionable_steps = result.ai_actionable_steps
+        task.ai_estimated_time = result.ai_estimated_time
+        task.ai_potential_roadblocks = result.ai_potential_roadblocks
 
         db.commit()
         db.refresh(task)

@@ -30,7 +30,10 @@ You MUST respond with ONLY a valid JSON object (no markdown, no code fences) wit
   "category": "One of: Work, Study, Personal, Shopping, Health, Finance, Other",
   "priority": "One of: High, Medium, Low",
   "priority_reason": "A brief explanation of why this priority level was assigned",
-  "improved_description": "An improved, clearer, and more actionable version of the task description"
+  "improved_description": "An improved, clearer, and more actionable version of the task description",
+  "ai_actionable_steps": ["Step 1", "Step 2", "Step 3"],
+  "ai_estimated_time": "A realistic time estimate (e.g. '30 minutes', '2 hours')",
+  "ai_potential_roadblocks": "A brief description of any potential roadblocks or challenges"
 }}
 
 Rules:
@@ -76,4 +79,7 @@ Rules:
             priority=result.get("priority", "Medium"),
             priority_reason=result.get("priority_reason", "No reason provided"),
             improved_description=result.get("improved_description", description or title),
+            ai_actionable_steps=result.get("ai_actionable_steps", []),
+            ai_estimated_time=result.get("ai_estimated_time", "Not estimated"),
+            ai_potential_roadblocks=result.get("ai_potential_roadblocks", "None identified"),
         )

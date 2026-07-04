@@ -22,7 +22,7 @@ app = FastAPI(
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_url, "http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[frontend_url, "http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,7 +38,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-from routes import auth, tasks, ai, stats, gamification, activities, notes, calendar
+from routes import auth, tasks, ai, stats, gamification, activities, notes, calendar, notifications
 
 # Include routers
 app.include_router(auth.router)
@@ -49,6 +49,7 @@ app.include_router(gamification.router)
 app.include_router(activities.router)
 app.include_router(notes.router)
 app.include_router(calendar.router)
+app.include_router(notifications.router)
 
 
 @app.get("/", tags=["Health"])

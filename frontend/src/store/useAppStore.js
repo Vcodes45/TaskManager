@@ -10,6 +10,30 @@ export const useAppStore = create(
       isCommandPaletteOpen: false,
       setCommandPaletteOpen: (isOpen) => set({ isCommandPaletteOpen: isOpen }),
       
+      // Global Data Cache (Fast Routing)
+      tasks: [],
+      tasksLoaded: false,
+      dashboardStats: null,
+      dashboardStatsLoaded: false,
+      setTasks: (tasks) => set({ tasks, tasksLoaded: true }),
+      setDashboardStats: (dashboardStats) => set({ dashboardStats, dashboardStatsLoaded: true }),
+      fetchTasks: async (taskService) => {
+        try {
+          const data = await taskService.getTasks();
+          set({ tasks: data || [], tasksLoaded: true });
+        } catch (error) {
+          console.error("Failed to fetch tasks", error);
+        }
+      },
+      fetchDashboardStats: async (statsService) => {
+        try {
+          const data = await statsService.getDashboardStats();
+          set({ dashboardStats: data, dashboardStatsLoaded: true });
+        } catch (error) {
+          console.error("Failed to fetch dashboard stats", error);
+        }
+      },
+      
       // Pomodoro State
       pomodoroState: {
         timeLeft: 25 * 60, // 25 mins in seconds

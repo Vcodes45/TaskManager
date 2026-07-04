@@ -159,27 +159,29 @@ function DroppableColumn({ columnId, tasks, onAddTask }) {
   );
 }
 
+import { useAppStore } from '../store/useAppStore';
+
 // --- Main Kanban Page ---
 export default function KanbanPage() {
   const { addToast } = useToastStore();
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { tasks, tasksLoaded, fetchTasks, setTasks } = useAppStore();
+  const [isFetching, setIsFetching] = useState(!tasksLoaded);
   const [activeTask, setActiveTask] = useState(null);
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  async function fetchTasks() {
-    try {
-      const data = await taskService.getTasks();
-      setTasks(data);
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-    } finally {
-      setLoading(false);
+    async function loadData() {
+      setIsFetching(true);
+      if (!tasksLoaded) {
+        await fetchTasks(taskService);
+      }
+      setIsFetching(false);
     }
-  }
+    loadData();
+  }, [tasksLoaded, fetchTasks]);
+
+  const refreshTasks = async () => {
+    await fetchTasks(taskService);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -205,15 +207,15 @@ export default function KanbanPage() {
     
     // Optimistic Add (with fake ID)
     const optimisticTask = { ...newTask, id: `temp-${Date.now()}`, created_at: new Date().toISOString() };
-    setTasks(prev => [...prev, optimisticTask]);
+    setTasks([...tasks, optimisticTask]);
 
     try {
       await taskService.createTask(newTask);
-      fetchTasks(); // Refresh to get real IDs and complete data
+      refreshTasks(); // Refresh to get real IDs and complete data
       addToast({ type: 'success', title: 'Task Created', message: '+5 XP gained' });
     } catch (err) {
       console.error("Failed to add task", err);
-      setTasks(prev => prev.filter(t => t.id !== optimisticTask.id));
+      setTasks(tasks.filter(t => t.id !== optimisticTask.id));
     }
   };
 
@@ -248,18 +250,15 @@ export default function KanbanPage() {
 
     if (!overStatus) return;
 
-    setTasks(prevTasks => {
-      const activeTaskIndex = prevTasks.findIndex(t => t.id === activeId);
-      const activeTask = prevTasks[activeTaskIndex];
+    const activeTaskIndex = tasks.findIndex(t => t.id === activeId);
+    const activeTaskData = tasks[activeTaskIndex];
 
-      if (activeTask.status !== overStatus) {
-        // Move task to new column locally during drag
-        return prevTasks.map(t => 
-          t.id === activeId ? { ...t, status: overStatus } : t
-        );
-      }
-      return prevTasks;
-    });
+    if (activeTaskData && activeTaskData.status !== overStatus) {
+      // Move task to new column locally during drag
+      setTasks(tasks.map(t => 
+        t.id === activeId ? { ...t, status: overStatus } : t
+      ));
+    }
   };
 
   const handleDragEnd = async (event) => {
@@ -269,7 +268,7 @@ export default function KanbanPage() {
 
     if (!over) {
       // Revert if dropped outside
-      fetchTasks(); 
+      refreshTasks(); 
       return;
     }
 
@@ -301,12 +300,12 @@ export default function KanbanPage() {
         await taskService.updateTask(activeId, { status: newStatus });
       } catch (error) {
         console.error("Failed to update status:", error);
-        fetchTasks();
+        refreshTasks();
       }
     }
   };
 
-  if (loading) {
+  if (isFetching && tasks.length === 0) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />

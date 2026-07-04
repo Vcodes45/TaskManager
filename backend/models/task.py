@@ -44,6 +44,11 @@ class Task(Base):
     priority = Column(String(20), nullable=True)
     priority_reason = Column(Text, nullable=True)
     improved_description = Column(Text, nullable=True)
+    
+    # Extended AI fields
+    ai_actionable_steps = Column(JSON, nullable=True) # List of strings
+    ai_estimated_time = Column(String(50), nullable=True)
+    ai_potential_roadblocks = Column(Text, nullable=True)
 
     # Advanced Fields
     is_archived = Column(Integer, default=0, nullable=False) # SQLite doesn't natively support booleans without mapping, integer is safer or Boolean

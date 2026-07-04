@@ -1,28 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { taskService } from '../services/taskService';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 import GlassCard from '../components/ui/GlassCard';
+import { useAppStore } from '../store/useAppStore';
 
 export default function AnalyticsPage() {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { tasks, tasksLoaded, fetchTasks } = useAppStore();
+  const [isFetching, setIsFetching] = useState(!tasksLoaded);
 
   useEffect(() => {
-    async function fetchTasks() {
-      try {
-        const data = await taskService.getTasks();
-        setTasks(data);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      } finally {
-        setLoading(false);
+    async function loadData() {
+      setIsFetching(true);
+      if (!tasksLoaded) {
+        await fetchTasks(taskService);
       }
+      setIsFetching(false);
     }
-    fetchTasks();
-  }, []);
+    loadData();
+  }, [tasksLoaded, fetchTasks]);
 
-  if (loading) {
+  // Dynamic Weekly Output calculation
+  const weeklyOutputData = useMemo(() => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const counts = { Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0 };
+    
+    (tasks || []).forEach(t => {
+      if (t.status === 'Completed' && t.updated_at) {
+        const date = new Date(t.updated_at);
+        if (!isNaN(date.getTime())) {
+          const dayName = days[date.getDay()];
+          if (dayName) {
+            counts[dayName] += 1;
+          }
+        }
+      }
+    });
+
+    // Reorder to start from Mon to Sun
+    return [
+      { name: 'Mon', tasks: counts['Mon'] },
+      { name: 'Tue', tasks: counts['Tue'] },
+      { name: 'Wed', tasks: counts['Wed'] },
+      { name: 'Thu', tasks: counts['Thu'] },
+      { name: 'Fri', tasks: counts['Fri'] },
+      { name: 'Sat', tasks: counts['Sat'] },
+      { name: 'Sun', tasks: counts['Sun'] },
+    ];
+  }, [tasks]);
+
+  if (isFetching && tasks.length === 0) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -30,9 +57,9 @@ export default function AnalyticsPage() {
     );
   }
 
-  const completedCount = tasks.filter(t => t.status === 'Completed').length;
-  const pendingCount = tasks.filter(t => t.status === 'Pending' || t.status === 'Todo').length;
-  const inProgressCount = tasks.filter(t => t.status === 'In Progress').length;
+  const completedCount = (tasks || []).filter(t => t.status === 'Completed').length;
+  const pendingCount = (tasks || []).filter(t => t.status === 'Pending' || t.status === 'Todo').length;
+  const inProgressCount = (tasks || []).filter(t => t.status === 'In Progress').length;
   
   const pieData = [
     { name: 'Completed', value: completedCount, color: '#10b981' },
@@ -40,15 +67,6 @@ export default function AnalyticsPage() {
     { name: 'Pending', value: pendingCount, color: '#8b5cf6' },
   ];
 
-  const dummyBarData = [
-    { name: 'Mon', tasks: 4 },
-    { name: 'Tue', tasks: 7 },
-    { name: 'Wed', tasks: 2 },
-    { name: 'Thu', tasks: 9 },
-    { name: 'Fri', tasks: 5 },
-    { name: 'Sat', tasks: 1 },
-    { name: 'Sun', tasks: 3 },
-  ];
 
   return (
     <div className="space-y-8 pb-12">
@@ -85,7 +103,7 @@ export default function AnalyticsPage() {
             </ResponsiveContainer>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="text-center">
-                <p className="text-2xl font-bold">{tasks.length}</p>
+                <p className="text-2xl font-bold">{(tasks || []).length}</p>
                 <p className="text-xs text-[var(--color-text-secondary)]">Total</p>
               </div>
             </div>
@@ -96,10 +114,10 @@ export default function AnalyticsPage() {
           <h2 className="text-xl font-bold mb-4">Weekly Output</h2>
           <div className="flex-1 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={dummyBarData}>
+              <BarChart data={weeklyOutputData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="name" stroke="rgba(255,255,255,0.3)" axisLine={false} tickLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.3)" axisLine={false} tickLine={false} />
+                <YAxis stroke="rgba(255,255,255,0.3)" axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip 
                   cursor={{fill: 'rgba(255,255,255,0.05)'}}
                   contentStyle={{ backgroundColor: '#12121a', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
