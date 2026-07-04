@@ -31,22 +31,17 @@ export function ToastManager() {
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9, x: 20 }}
-            className={`pointer-events-auto flex items-center gap-3 p-4 rounded-xl shadow-2xl border backdrop-blur-xl ${
-              toast.type === 'xp' ? 'bg-gradient-to-r from-primary/90 to-blue-500/90 border-[var(--color-border)] text-[var(--color-text-primary)]' :
-              toast.type === 'achievement' ? 'bg-gradient-to-r from-yellow-500/90 to-orange-500/90 border-[var(--color-border)] text-[var(--color-text-primary)]' :
-              toast.type === 'success' ? 'bg-green-500/90 border-[var(--color-border)] text-[var(--color-text-primary)]' :
-              'bg-surface-elevated/90 border-[var(--color-border-light)] text-[var(--color-text-primary)]'
-            }`}
+            className={`pointer-events-auto flex items-center gap-3 p-4 rounded-xl border bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-primary)] shadow-md`}
           >
             <div className="shrink-0">
-              {toast.type === 'xp' ? <FiCheckCircle size={24} className="text-[var(--color-text-primary)] drop-shadow-md" /> :
-               toast.type === 'achievement' ? <FiAward size={24} className="text-[var(--color-text-primary)] drop-shadow-md" /> :
-               toast.type === 'success' ? <FiCheckCircle size={24} /> :
-               <FiInfo size={24} />}
+              {toast.type === 'xp' ? <FiCheckCircle size={20} className="text-[var(--color-accent)]" /> :
+               toast.type === 'achievement' ? <FiAward size={20} className="text-[var(--color-warning)]" /> :
+               toast.type === 'success' ? <FiCheckCircle size={20} className="text-[var(--color-success)]" /> :
+               <FiInfo size={20} className="text-[var(--color-text-secondary)]" />}
             </div>
             <div>
-              {toast.title && <h4 className="font-bold text-sm drop-shadow-md">{toast.title}</h4>}
-              <p className="text-xs font-medium opacity-90 drop-shadow-sm">{toast.message}</p>
+              {toast.title && <h4 className="font-bold text-xs">{toast.title}</h4>}
+              <p className="text-[10px] font-semibold text-[var(--color-text-secondary)] mt-0.5">{toast.message}</p>
             </div>
           </motion.div>
         ))}

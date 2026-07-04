@@ -65,23 +65,23 @@ export default function CommandPalette() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/45"
             onClick={() => setCommandPaletteOpen(false)}
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            transition={{ type: "spring", duration: 0.4, bounce: 0 }}
-            className="relative w-full max-w-xl bg-surface-elevated glass border border-[var(--color-border-light)] rounded-2xl shadow-2xl overflow-hidden mx-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.15 }}
+            className="relative w-full max-w-xl bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-md overflow-hidden mx-4"
           >
-            <div className="flex items-center px-4 py-4 border-b border-[var(--color-border-light)]">
-              <FiSearch className="w-5 h-5 text-[var(--color-text-secondary)]" />
+            <div className="flex items-center px-4 py-3 border-b border-[var(--color-border)]">
+              <FiSearch className="w-4 h-4 text-[var(--color-text-secondary)]" />
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Type a command or search..."
-                className="w-full px-3 py-1 bg-transparent border-none text-[var(--color-text-primary)] focus:outline-none focus:ring-0 text-lg placeholder-gray-500"
+                placeholder="Search commands..."
+                className="w-full px-3 py-1 bg-transparent border-none text-[var(--color-text-primary)] focus:outline-none focus:ring-0 text-sm placeholder-gray-400"
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
@@ -93,7 +93,7 @@ export default function CommandPalette() {
               </div>
             </div>
 
-            <div className="max-h-[60vh] overflow-y-auto p-2">
+            <div className="max-h-[50vh] overflow-y-auto p-1.5">
               {filteredActions.length === 0 ? (
                 <div className="p-4 text-center text-[var(--color-text-secondary)]">No results found.</div>
               ) : (
@@ -106,12 +106,12 @@ export default function CommandPalette() {
                         navigate(action.path);
                         setCommandPaletteOpen(false);
                       }}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-xl cursor-pointer transition-colors ${
-                        isActive ? 'bg-primary/20 text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-text-primary)]/5'
+                      className={`flex items-center space-x-3 px-4 py-2 rounded-lg cursor-pointer transition-colors text-xs font-semibold ${
+                        isActive ? 'bg-[var(--color-surface-elevated)] text-[var(--color-text-primary)] border border-[var(--color-border)]' : 'text-[var(--color-text-secondary)] border border-transparent hover:bg-[var(--color-surface-elevated)]'
                       }`}
                     >
-                      <action.icon className={`w-5 h-5 ${isActive ? 'text-primary' : 'text-[var(--color-text-secondary)]'}`} />
-                      <span className="font-medium">{action.name}</span>
+                      <action.icon className={`w-4 h-4 ${isActive ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-secondary)]'}`} />
+                      <span>{action.name}</span>
                     </div>
                   );
                 })

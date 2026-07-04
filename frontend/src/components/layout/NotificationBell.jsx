@@ -6,11 +6,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { createPortal } from 'react-dom';
 
 const TYPE_CONFIG = {
-  TASK_CREATED: { icon: FiCheckCircle, color: 'text-primary', bg: 'bg-primary/20' },
-  TASK_COMPLETED: { icon: FiCheck, color: 'text-[var(--color-success)]', bg: 'bg-[var(--color-success-dim)]' },
-  TASK_DELETED: { icon: FiTrash2, color: 'text-[var(--color-danger)]', bg: 'bg-[var(--color-danger-dim)]' },
-  AI_ANALYSIS: { icon: FiZap, color: 'text-[var(--color-purple)]', bg: 'bg-[var(--color-purple-dim)]' },
-  FOCUS_COMPLETED: { icon: FiClock, color: 'text-[var(--color-warning)]', bg: 'bg-[var(--color-warning-dim)]' },
+  TASK_CREATED: { icon: FiCheckCircle, color: 'text-[var(--color-accent)]', bg: 'bg-[var(--color-surface-elevated)] border border-[var(--color-border)]' },
+  TASK_COMPLETED: { icon: FiCheck, color: 'text-[var(--color-success)]', bg: 'bg-[var(--color-surface-elevated)] border border-[var(--color-border)]' },
+  TASK_DELETED: { icon: FiTrash2, color: 'text-[var(--color-danger)]', bg: 'bg-[var(--color-surface-elevated)] border border-[var(--color-border)]' },
+  AI_ANALYSIS: { icon: FiZap, color: 'text-[var(--color-purple)]', bg: 'bg-[var(--color-surface-elevated)] border border-[var(--color-border)]' },
+  FOCUS_COMPLETED: { icon: FiClock, color: 'text-[var(--color-warning)]', bg: 'bg-[var(--color-surface-elevated)] border border-[var(--color-border)]' },
 };
 
 export default function NotificationBell() {
@@ -112,16 +112,16 @@ export default function NotificationBell() {
             left: `${panelPos.left}px`,
             zIndex: 9999,
           }}
-          className="w-80 sm:w-96 max-h-[70vh] glass bg-surface-elevated border border-[var(--color-border-light)] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+          className="w-80 sm:w-96 max-h-[70vh] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-md flex flex-col overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border-light)]">
-            <h3 className="font-semibold text-sm">Notifications</h3>
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--color-border)]">
+            <h3 className="font-semibold text-xs">Notifications</h3>
             <div className="flex items-center gap-2">
               {data.unread > 0 && (
                 <button
                   onClick={handleMarkAllRead}
-                  className="text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+                  className="text-xs text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors font-semibold"
                 >
                   Mark all read
                 </button>
@@ -155,21 +155,21 @@ export default function NotificationBell() {
                     key={notif.id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className={`flex items-start gap-3 px-4 py-3 border-b border-[var(--color-border-light)] hover:bg-[var(--color-text-primary)]/5 transition-colors cursor-pointer ${
-                      notif.is_read === 0 ? 'bg-primary/5' : ''
+                    className={`flex items-start gap-3 px-4 py-3 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-elevated)] transition-colors cursor-pointer ${
+                      notif.is_read === 0 ? 'bg-[var(--color-surface-elevated)]/60' : ''
                     }`}
                     onClick={() => { if (notif.is_read === 0) handleMarkRead(notif.id); }}
                   >
-                    <div className={`shrink-0 w-9 h-9 rounded-xl flex items-center justify-center ${config.bg} ${config.color}`}>
-                      <Icon size={16} />
+                    <div className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${config.bg} ${config.color}`}>
+                      <Icon size={14} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
-                        <p className={`text-sm font-medium leading-tight ${notif.is_read === 0 ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>
+                        <p className={`text-xs font-semibold leading-tight ${notif.is_read === 0 ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}>
                           {notif.title}
                         </p>
                         {notif.is_read === 0 && (
-                          <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] shrink-0 mt-1.5" />
                         )}
                       </div>
                       <p className="text-xs text-[var(--color-text-muted)] mt-0.5 line-clamp-2">{notif.message}</p>
@@ -192,19 +192,19 @@ export default function NotificationBell() {
       {/* Bell Button */}
       <motion.button
         ref={buttonRef}
-        whileTap={{ scale: 0.9 }}
+        whileTap={{ scale: 0.95 }}
         onClick={toggleOpen}
-        className="relative p-2.5 rounded-xl text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/5 transition-colors"
+        className="relative p-2 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/5 transition-colors"
         aria-label="Notifications"
       >
-        <FiBell size={20} />
+        <FiBell size={18} />
         <AnimatePresence>
           {data.unread > 0 && (
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-[var(--color-danger)] text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg"
+              className="absolute top-0.5 right-0.5 w-4 h-4 bg-[var(--color-danger)] text-white text-[9px] font-bold rounded-full flex items-center justify-center"
             >
               {data.unread > 9 ? '9+' : data.unread}
             </motion.span>

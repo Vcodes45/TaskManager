@@ -4,8 +4,8 @@ import Sidebar from './Sidebar';
 import { useAppStore } from '../../store/useAppStore';
 import { useEffect } from 'react';
 import CommandPalette from '../CommandPalette';
-
 import { ToastManager } from '../ui/ToastManager';
+import Footer from '../Footer';
 
 export default function AppLayout({ children }) {
   const location = useLocation();
@@ -23,52 +23,62 @@ export default function AppLayout({ children }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  return (
-    <div className="flex min-h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)] overflow-hidden selection:bg-primary/30">
-      
-      {/* Global Animated Background Blobs */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <motion.div 
-          animate={{ 
-            x: [0, 50, -20, 0], 
-            y: [0, -30, 20, 0],
-            scale: [1, 1.1, 0.9, 1]
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] right-[-5%] w-[40vw] h-[40vw] rounded-full bg-primary/10 blur-[100px]"
-        />
-        <motion.div 
-          animate={{ 
-            x: [0, -40, 30, 0], 
-            y: [0, 50, -10, 0],
-            scale: [1, 1.2, 0.8, 1]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-accent/10 blur-[120px]"
-        />
-      </div>
+  const getBreadcrumbs = () => {
+    const path = location.pathname;
+    if (path === '/') return 'Workspace / Dashboard';
+    if (path === '/kanban') return 'Workspace / Kanban Board';
+    if (path === '/analytics') return 'Workspace / Analytics';
+    if (path === '/focus') return 'Workspace / Focus Mode';
+    if (path === '/settings') return 'Workspace / Settings';
+    if (path === '/profile') return 'Workspace / Profile';
+    if (path === '/about') return 'Workspace / About';
+    if (path.startsWith('/tasks/new')) return 'Tasks / New';
+    if (path.includes('/edit')) return 'Tasks / Edit';
+    return 'Workspace';
+  };
 
+  return (
+    <div className="flex h-screen bg-[var(--color-surface)] text-[var(--color-text-primary)] overflow-hidden selection:bg-primary/30">
       <Sidebar />
       <CommandPalette />
       <ToastManager />
 
-      <main 
-        className={`flex-1 relative z-10 transition-all duration-300 ease-in-out
-          ${isSidebarOpen ? 'lg:pl-0' : 'lg:pl-0'}`} // Sidebar handles its own width in the flex container
-      >
-        <div className="h-full overflow-y-auto overflow-x-hidden p-4 pt-20 lg:p-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.98 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full max-w-7xl mx-auto"
+      <main className="flex-1 flex flex-col relative z-10 transition-all duration-300 ease-in-out h-full overflow-hidden">
+        {/* Notion topbar */}
+        <div className="h-14 border-b border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-between px-6 lg:px-10 shrink-0">
+          <div className="flex items-center gap-3 pl-12 lg:pl-0">
+            <span className="text-xs font-semibold text-[var(--color-text-secondary)] tracking-tight">
+              {getBreadcrumbs()}
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => useAppStore.getState().setCommandPaletteOpen(true)}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 border border-[var(--color-border)] hover:bg-[var(--color-surface-elevated)] rounded-lg text-[10px] text-[var(--color-text-secondary)] font-semibold transition-colors"
             >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+              <span>Search commands</span>
+              <kbd className="bg-[var(--color-surface-elevated)] px-1 rounded text-[9px] font-mono">⌘K</kbd>
+            </button>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-10 flex flex-col justify-between">
+          <div className="flex-1 w-full max-w-7xl mx-auto mb-10">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="h-full w-full"
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          <Footer />
         </div>
       </main>
     </div>

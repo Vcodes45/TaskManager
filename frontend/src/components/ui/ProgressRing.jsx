@@ -36,7 +36,7 @@ export default function ProgressRing({ progress, size = 120, strokeWidth = 8, co
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
+          className="text-2xl font-bold text-[var(--color-text-primary)]"
         >
           {Math.round(progress)}%
         </motion.span>

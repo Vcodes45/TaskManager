@@ -125,13 +125,13 @@ export default function Dashboard() {
       
       // Instantly update stats on dashboard
       if (stats) {
-        setStats(prev => ({
-          ...prev,
+        setStats({
+          ...stats,
           tasks: {
-            ...prev.tasks,
-            completed: prev.tasks.completed + (newStatus === 'Completed' ? 1 : -1)
+            ...stats.tasks,
+            completed: stats.tasks.completed + (newStatus === 'Completed' ? 1 : -1)
           }
-        }));
+        });
       }
 
       if (newStatus === 'Completed') {
@@ -179,10 +179,10 @@ export default function Dashboard() {
         setTasks(tasks.map(t => selectedTasks.has(t.id) ? { ...t, status: 'Completed' } : t));
         
         if (stats && newlyCompletedCount > 0) {
-          setStats(prev => ({
-            ...prev,
-            tasks: { ...prev.tasks, completed: prev.tasks.completed + newlyCompletedCount }
-          }));
+          setStats({
+            ...stats,
+            tasks: { ...stats.tasks, completed: stats.tasks.completed + newlyCompletedCount }
+          });
         }
         
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
@@ -261,94 +261,91 @@ export default function Dashboard() {
     <div className="space-y-8 pb-12 max-w-6xl mx-auto">
       {/* Hero Section */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-surface-elevated/80 to-surface border border-[var(--color-border-light)] p-8 sm:p-12 shadow-2xl glass"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="relative overflow-hidden rounded-xl bg-[var(--color-surface-elevated)] border border-[var(--color-border)] p-8 sm:p-10"
       >
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/20 rounded-full blur-[80px]" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-accent/20 rounded-full blur-[100px]" />
-        
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-4 flex-1 text-center md:text-left">
             <motion.h1 
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl font-bold"
+              transition={{ delay: 0.1 }}
+              className="text-3xl sm:text-4xl font-bold tracking-tight text-[var(--color-text-primary)]"
             >
-              {getGreeting()}, <span className="greeting-name font-bold">{user?.name?.split(' ')[0] || 'User'}</span>
+              {getGreeting()}, <span className="greeting-name font-bold text-[var(--color-text-primary)]">{user?.name?.split(' ')[0] || 'User'}</span>
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-[var(--color-text-secondary)] text-lg italic max-w-xl"
+              transition={{ delay: 0.2 }}
+              className="text-[var(--color-text-secondary)] text-base max-w-xl"
             >
               "{quote}"
             </motion.p>
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center space-x-2 bg-[var(--color-text-primary)]/5 px-4 py-2 rounded-full">
+            <div className="flex flex-wrap gap-3 mt-4">
+              <div className="flex items-center space-x-2 border border-[var(--color-border)] bg-[var(--color-surface)] px-3.5 py-1.5 rounded-lg">
                 <FiStar className="text-[var(--color-warning)]" />
-                <span className="font-medium text-sm">Level {stats.user.level} ({stats.user.xp} XP)</span>
+                <span className="font-medium text-xs">Level {stats.user.level} ({stats.user.xp} XP)</span>
               </div>
-              <div className="flex items-center space-x-2 bg-[var(--color-text-primary)]/5 px-4 py-2 rounded-full">
+              <div className="flex items-center space-x-2 border border-[var(--color-border)] bg-[var(--color-surface)] px-3.5 py-1.5 rounded-lg">
                 <FiZap className="text-[var(--color-warning)]" />
-                <span className="font-medium text-sm">{stats.user.current_streak} Day Streak</span>
+                <span className="font-medium text-xs">{stats.user.current_streak} Day Streak</span>
               </div>
             </div>
           </div>
           
           <div className="shrink-0 flex flex-col items-center">
-            <ProgressRing progress={progress} size={140} strokeWidth={10} />
-            <span className="text-sm text-[var(--color-text-secondary)] mt-2 font-medium">Task Completion</span>
+            <ProgressRing progress={progress} size={110} strokeWidth={8} color="var(--color-accent)" />
+            <span className="text-xs text-[var(--color-text-secondary)] mt-2 font-medium">Task Completion</span>
           </div>
         </div>
       </motion.div>
 
       {/* Widgets Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <GlassCard delay={0.1} className="flex items-center space-x-4">
-          <div className="p-3 bg-primary/20 text-primary rounded-xl">
-            <FiCheckCircle size={24} />
+        <GlassCard delay={0.05} className="flex items-center space-x-4">
+          <div className="p-3 border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] rounded-xl">
+            <FiCheckCircle size={20} />
           </div>
           <div>
-            <p className="text-[var(--color-text-secondary)] text-sm">Completed Tasks</p>
-            <p className="text-2xl font-bold">{stats.tasks.completed}</p>
+            <p className="text-[var(--color-text-secondary)] text-xs font-medium">Completed Tasks</p>
+            <p className="text-2xl font-bold text-[var(--color-text-primary)]">{stats.tasks.completed}</p>
           </div>
         </GlassCard>
         
-        <GlassCard delay={0.2} className="flex items-center space-x-4">
-          <div className="p-3 bg-blue-500/20 text-blue-400 rounded-xl">
-            <FiActivity size={24} />
+        <GlassCard delay={0.1} className="flex items-center space-x-4">
+          <div className="p-3 border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] rounded-xl">
+            <FiActivity size={20} />
           </div>
           <div>
-            <p className="text-[var(--color-text-secondary)] text-sm">Productivity Score</p>
-            <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-[var(--color-primary)]">
+            <p className="text-[var(--color-text-secondary)] text-xs font-medium">Productivity Score</p>
+            <p className="text-2xl font-bold text-[var(--color-text-primary)]">
               {stats.productivity.score}
             </p>
           </div>
         </GlassCard>
 
-        <GlassCard delay={0.3} className="flex items-center space-x-4 h-full bg-gradient-to-br from-surface-elevated to-surface">
-          <div className="p-3 bg-[var(--color-warning-dim)] text-[var(--color-warning)] rounded-xl">
-            <FiClock size={24} />
+        <GlassCard delay={0.15} className="flex items-center space-x-4 h-full bg-[var(--color-surface)]">
+          <div className="p-3 border border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] rounded-xl">
+            <FiClock size={20} />
           </div>
           <div>
-            <p className="text-[var(--color-text-secondary)] text-sm">Focus Time Today</p>
-            <p className="text-xl font-bold text-[var(--color-warning)]">{stats.productivity.focus_minutes_today} min</p>
+            <p className="text-[var(--color-text-secondary)] text-xs font-medium">Focus Time Today</p>
+            <p className="text-2xl font-bold text-[var(--color-text-primary)]">{stats.productivity.focus_minutes_today} min</p>
           </div>
         </GlassCard>
         
-        <GlassCard delay={0.4} className="flex flex-col justify-center h-full">
-          <p className="text-[var(--color-text-secondary)] text-sm mb-2">Weekly Goal</p>
-          <div className="flex justify-between text-sm mb-1">
-            <span>{stats.weekly_goal.completed} / {stats.weekly_goal.target} Tasks</span>
-            <span>{Math.round((stats.weekly_goal.completed / stats.weekly_goal.target) * 100)}%</span>
+        <GlassCard delay={0.2} className="flex flex-col justify-center h-full">
+          <p className="text-[var(--color-text-secondary)] text-xs font-medium mb-2">Weekly Goal</p>
+          <div className="flex justify-between text-xs mb-1">
+            <span className="font-semibold">{stats.weekly_goal.completed} / {stats.weekly_goal.target} Tasks</span>
+            <span className="text-[var(--color-text-secondary)]">{Math.round((stats.weekly_goal.completed / stats.weekly_goal.target) * 100)}%</span>
           </div>
-          <div className="progress-bar-custom bg-[var(--color-text-primary)]/10 w-full">
+          <div className="progress-bar-custom bg-[var(--color-border)] w-full">
             <div 
-              className="progress-bar-fill bg-gradient-to-r from-[var(--color-purple)] to-[var(--color-primary)]" 
+              className="progress-bar-fill bg-[var(--color-accent)]" 
               style={{ width: `${Math.min(100, (stats.weekly_goal.completed / stats.weekly_goal.target) * 100)}%` }}
             ></div>
           </div>
@@ -359,15 +356,15 @@ export default function Dashboard() {
       <div className="pt-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
-            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-primary)] to-[var(--color-text-secondary)]">My Tasks</h2>
-            <p className="text-[var(--color-text-secondary)] mt-1 text-sm">Manage and prioritize your work</p>
+            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">My Tasks</h2>
+            <p className="text-[var(--color-text-secondary)] mt-0.5 text-xs">Manage and prioritize your work</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex bg-surface-glass border border-[var(--color-border-light)] rounded-xl p-1">
-              <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-[var(--color-text-primary)]/10 text-primary' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}><FiList /></button>
-              <button onClick={() => setViewMode('grid')} className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-[var(--color-text-primary)]/10 text-primary' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}><FiGrid /></button>
+            <div className="flex bg-[var(--color-surface-elevated)] border border-[var(--color-border)] rounded-lg p-1">
+              <button onClick={() => setViewMode('list')} className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}><FiList size={14} /></button>
+              <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}><FiGrid size={14} /></button>
             </div>
-            <Link to="/tasks/new" className="flex items-center space-x-2 bg-primary hover:bg-primary/90 text-[var(--color-text-primary)] px-4 py-2 rounded-xl transition-all shadow-[0_0_20px_rgba(var(--color-primary),0.3)]">
+            <Link to="/tasks/new" className="flex items-center space-x-2 bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-all shadow-sm">
               <FiPlus />
               <span>New Task</span>
             </Link>
@@ -375,22 +372,23 @@ export default function Dashboard() {
         </div>
 
         {/* Toolbar */}
-        <div className="glass border-[var(--color-border-light)] rounded-2xl p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full md:w-96">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]" />
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-4 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="relative w-full md:w-80">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] text-sm" />
             <input 
               type="text" 
               placeholder="Search tasks..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-surface border-[var(--color-border-light)] rounded-xl focus:border-primary transition-colors text-sm"
+              style={{ paddingLeft: '2.25rem' }}
+              className="w-full pr-4 py-1.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg focus:border-accent transition-colors text-xs"
             />
           </div>
           
-          <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
+          <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 custom-scrollbar">
             <div className="flex items-center gap-2">
-              <FiFilter className="text-[var(--color-text-secondary)]" />
-              <select value={filter} onChange={(e) => setFilter(e.target.value)} className="bg-surface border-[var(--color-border-light)] rounded-lg text-sm px-3 py-2 min-w-[120px]">
+              <FiFilter className="text-[var(--color-text-secondary)] text-xs" />
+              <select value={filter} onChange={(e) => setFilter(e.target.value)} className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-xs px-2.5 py-1.5 min-w-[120px]">
                 <option value="all">All Tasks</option>
                 <option value="today">Today</option>
                 <option value="tomorrow">Tomorrow</option>
@@ -403,8 +401,8 @@ export default function Dashboard() {
             </div>
             
             <div className="flex items-center gap-2">
-              <span className="text-[var(--color-text-secondary)] text-sm whitespace-nowrap">Sort:</span>
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="bg-surface border-[var(--color-border-light)] rounded-lg text-sm px-3 py-2">
+              <span className="text-[var(--color-text-secondary)] text-xs whitespace-nowrap">Sort:</span>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-xs px-2.5 py-1.5">
                 <option value="created_desc">Newest</option>
                 <option value="due_asc">Due Date</option>
                 <option value="priority">Priority</option>
@@ -423,12 +421,12 @@ export default function Dashboard() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden mb-6"
             >
-              <div className="glass border border-primary/30 bg-primary/10 rounded-xl p-3 flex items-center justify-between">
-                <span className="text-sm font-medium">{selectedTasks.size} tasks selected</span>
+              <div className="border border-[var(--color-border)] bg-[var(--color-surface-elevated)] rounded-xl p-3 flex items-center justify-between">
+                <span className="text-xs font-semibold text-[var(--color-text-primary)]">{selectedTasks.size} tasks selected</span>
                 <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                  <button onClick={() => handleBulkAction('complete')} className="px-3 py-1.5 text-xs bg-[var(--color-success-dim)] text-[var(--color-success)] rounded-lg hover:bg-[var(--color-success-dim)] transition-colors flex items-center gap-2"><FiCheckCircle /> Complete</button>
-                  <button onClick={() => handleBulkAction('archive')} className="px-3 py-1.5 text-xs bg-[var(--color-warning-dim)] text-[var(--color-warning)] rounded-lg hover:bg-[var(--color-warning-dim)] transition-colors flex items-center gap-2"><FiArchive /> Archive</button>
-                  <button onClick={() => handleBulkAction('delete')} className="px-3 py-1.5 text-xs bg-[var(--color-danger-dim)] text-[var(--color-danger)] rounded-lg hover:bg-[var(--color-danger-dim)] transition-colors flex items-center gap-2"><FiTrash2 /> Delete</button>
+                  <button onClick={() => handleBulkAction('complete')} className="px-3 py-1 text-xs border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-success)] rounded-lg hover:bg-[var(--color-success-dim)] transition-colors flex items-center gap-1.5"><FiCheckCircle /> Complete</button>
+                  <button onClick={() => handleBulkAction('archive')} className="px-3 py-1 text-xs border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-warning)] rounded-lg hover:bg-[var(--color-warning-dim)] transition-colors flex items-center gap-1.5"><FiArchive /> Archive</button>
+                  <button onClick={() => handleBulkAction('delete')} className="px-3 py-1 text-xs border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-danger)] rounded-lg hover:bg-[var(--color-danger-dim)] transition-colors flex items-center gap-1.5"><FiTrash2 /> Delete</button>
                 </div>
               </div>
             </motion.div>
@@ -438,16 +436,16 @@ export default function Dashboard() {
         {/* Task List/Grid */}
         <div className="mb-4 flex items-center gap-3 px-2">
           <button onClick={selectAll} className="text-[var(--color-text-secondary)] hover:text-primary transition-colors">
-            {selectedTasks.size === filteredAndSortedTasks.length && filteredAndSortedTasks.length > 0 ? <FiCheckSquare size={18} className="text-primary"/> : <div className="w-[18px] h-[18px] border-2 border-[var(--color-text-muted)] rounded-sm"></div>}
+            {selectedTasks.size === filteredAndSortedTasks.length && filteredAndSortedTasks.length > 0 ? <FiCheckSquare size={18} className="text-[var(--color-text-primary)]"/> : <div className="w-[18px] h-[18px] border-2 border-[var(--color-border)] rounded-sm"></div>}
           </button>
           <span className="text-sm text-[var(--color-text-muted)]">Select All</span>
         </div>
 
         {filteredAndSortedTasks.length === 0 ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20 glass rounded-3xl">
-            <FiCheckCircle size={48} className="mx-auto text-primary/30 mb-4" />
-            <h2 className="text-xl font-bold mb-2">No tasks found</h2>
-            <p className="text-[var(--color-text-secondary)]">Try adjusting your filters or search query.</p>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20 border border-[var(--color-border)] rounded-xl">
+            <FiCheckCircle size={36} className="mx-auto text-[var(--color-text-muted)] mb-3" />
+            <h2 className="text-lg font-bold mb-1">No tasks found</h2>
+            <p className="text-[var(--color-text-secondary)] text-sm">Try adjusting your filters or search query.</p>
           </motion.div>
         ) : (
           <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : "space-y-3"}>
@@ -456,68 +454,76 @@ export default function Dashboard() {
                 <motion.div
                   layout
                   key={task.id}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className={`glass border rounded-2xl p-4 transition-all group relative ${
-                    task.status === 'Completed' ? 'bg-surface-elevated/20 opacity-60' : 'bg-surface-elevated/60 hover:border-[var(--color-border)]'
-                  } ${selectedTasks.has(task.id) ? 'border-primary ring-1 ring-primary/50' : 'border-[var(--color-border-light)]'} ${viewMode === 'list' ? 'flex items-center' : 'flex flex-col'}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className={`border rounded-xl p-4 transition-colors relative ${
+                    task.status === 'Completed' ? 'opacity-60' : ''
+                  } ${selectedTasks.has(task.id) ? 'border-[var(--color-text-primary)]' : 'border-[var(--color-border)]'} flex flex-col w-full`}
                 >
-                  <div className={`absolute top-4 ${viewMode === 'list' ? 'left-4' : 'right-4'} z-10`}>
-                    <button onClick={() => toggleSelection(task.id)}>
-                      {selectedTasks.has(task.id) ? <FiCheckSquare size={18} className="text-primary"/> : <div className="w-[18px] h-[18px] border-2 border-[var(--color-text-muted)] hover:border-[var(--color-text-primary)] rounded-sm transition-colors"></div>}
-                    </button>
-                  </div>
-
-                  <div className={`${viewMode === 'list' ? 'flex items-center flex-1 ml-8 sm:ml-10' : 'flex-1 mt-6'}`}>
-                    <button onClick={() => toggleStatus(task)} className={`shrink-0 ${viewMode === 'list' ? 'mr-4' : 'mb-3'}`}>
-                      {task.status === 'Completed' ? <FiCheckCircle size={22} className="text-[var(--color-success)]" /> : <FiCircle size={22} className="text-[var(--color-text-secondary)] hover:text-primary transition-colors" />}
-                    </button>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h3 className={`font-medium truncate ${task.status === 'Completed' ? 'line-through text-[var(--color-text-muted)]' : 'text-[var(--color-text-primary)]'}`}>
-                        {task.title}
-                      </h3>
-                      {task.description && (
-                        <p className={`text-xs text-[var(--color-text-secondary)] mt-1 ${viewMode === 'list' ? 'line-clamp-1' : 'line-clamp-2'}`}>{task.description}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className={`flex items-center gap-3 ${viewMode === 'list' ? 'mt-3 sm:mt-0 ml-4 sm:ml-4 shrink-0 flex-wrap sm:flex-nowrap' : 'mt-4 pt-4 border-t border-[var(--color-border-light)] w-full justify-between'}`}>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[10px] px-2 py-1 rounded bg-[var(--color-text-primary)]/5 ${
-                        task.priority === 'High' ? 'text-[var(--color-danger)]' : task.priority === 'Medium' ? 'text-[var(--color-warning)]' : 'text-[var(--color-success)]'
-                      }`}>
-                        {task.priority || 'Medium'}
-                      </span>
-                      {task.due_date && (
-                        <div className="flex items-center text-[10px] text-[var(--color-text-secondary)] bg-[var(--color-text-primary)]/5 px-2 py-1 rounded">
-                          <FiCalendar className="mr-1" />
-                          {format(parseISO(task.due_date), 'MMM d')}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className={`flex items-center gap-1 ${viewMode === 'list' ? 'opacity-0 group-hover:opacity-100 transition-opacity' : ''}`}>
-                      <button onClick={() => handleAIAnalyze(task)} className="p-1.5 text-[var(--color-purple)] hover:text-[var(--color-purple)] hover:bg-[var(--color-purple-dim)] rounded transition-colors" title="AI Analyze">
-                        <FiZap size={14} />
+                  <div className={`flex ${viewMode === 'list' ? 'flex-col sm:flex-row sm:items-center justify-between gap-4 w-full' : 'flex-col gap-3 w-full'}`}>
+                    {/* Left side: Selection + CompleteCircle + Title & Description */}
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <button onClick={() => toggleSelection(task.id)} className="mt-1 shrink-0">
+                        {selectedTasks.has(task.id) ? (
+                          <FiCheckSquare size={16} className="text-[var(--color-text-primary)]" />
+                        ) : (
+                          <div className="w-4 h-4 border-2 border-[var(--color-border)] hover:border-[var(--color-text-primary)] rounded-sm transition-colors" />
+                        )}
                       </button>
-                      <Link to={`/tasks/${task.id}/edit`} className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/10 rounded transition-colors" title="Edit">
-                        <FiEdit2 size={14} />
-                      </Link>
-                      <button onClick={() => handleDelete(task.id)} className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-danger)] hover:bg-[var(--color-danger-dim)] rounded transition-colors" title="Delete">
-                        <FiTrash2 size={14} />
+
+                      <button onClick={() => toggleStatus(task)} className="mt-0.5 shrink-0">
+                        {task.status === 'Completed' ? (
+                          <FiCheckCircle size={18} className="text-[var(--color-text-primary)]" />
+                        ) : (
+                          <FiCircle size={18} className="text-[var(--color-border)] hover:text-[var(--color-text-primary)] transition-colors" />
+                        )}
                       </button>
+
+                      <div className="flex-1 min-w-0">
+                        <h3 className={`font-semibold text-xs leading-5 truncate ${task.status === 'Completed' ? 'line-through text-[var(--color-text-muted)]' : 'text-[var(--color-text-primary)]'}`}>
+                          {task.title}
+                        </h3>
+                        {task.description && (
+                          <p className={`text-[11px] text-[var(--color-text-secondary)] mt-0.5 ${viewMode === 'list' ? 'line-clamp-1' : 'line-clamp-2'}`}>{task.description}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Right side: Priority + Date + Actions */}
+                    <div className={`flex items-center gap-3 shrink-0 ${viewMode === 'list' ? '' : 'justify-between border-t border-[var(--color-border)] pt-3 w-full'}`}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] font-semibold px-2 py-0.5 rounded border border-[var(--color-border)] text-[var(--color-text-secondary)] bg-[var(--color-surface-elevated)]">
+                          {task.priority || 'Medium'}
+                        </span>
+                        {task.due_date && (
+                          <div className="flex items-center text-[9px] font-semibold text-[var(--color-text-secondary)] border border-[var(--color-border)] px-2 py-0.5 rounded bg-[var(--color-surface-elevated)]">
+                            <FiCalendar className="mr-1 text-[9px]" />
+                            {format(parseISO(task.due_date), 'MMM d')}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity">
+                        <button onClick={() => handleAIAnalyze(task)} className="p-1 border border-[var(--color-border)] hover:bg-[var(--color-surface-elevated)] rounded transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]" title="AI Analyze">
+                          <FiZap size={12} />
+                        </button>
+                        <Link to={`/tasks/${task.id}/edit`} className="p-1 border border-[var(--color-border)] hover:bg-[var(--color-surface-elevated)] rounded transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]" title="Edit">
+                          <FiEdit2 size={12} />
+                        </Link>
+                        <button onClick={() => handleDelete(task.id)} className="p-1 border border-[var(--color-border)] hover:bg-[var(--color-surface-elevated)] rounded transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]" title="Delete">
+                          <FiTrash2 size={12} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                   
                   {/* Embedded AI Results Panel if AI has run on this task */}
                   {(task.summary || task.category || task.priority) && (
-                    <div className="mt-4 pt-4 border-t border-[var(--color-border-light)] w-full">
+                    <div className="mt-4 pt-4 border-t border-[var(--color-border)] w-full">
                       <button 
                         onClick={() => toggleAIExpand(task.id)}
-                        className="text-xs font-semibold text-[var(--color-purple)] hover:text-[var(--color-purple)] flex items-center gap-2 mb-2 transition-colors"
+                        className="text-xs font-semibold text-[var(--color-text-primary)] flex items-center gap-2 mb-2 transition-colors"
                       >
                         <FiZap /> {expandedAI.has(task.id) ? 'Hide AI Insights' : 'View AI Insights'}
                       </button>
@@ -530,22 +536,22 @@ export default function Dashboard() {
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="bg-[var(--color-purple-dim)] border border-[var(--color-purple)]/30 rounded-xl p-4 mt-2">
-                              {task.summary && <p className="text-xs text-[var(--color-text-secondary)] mb-3">{task.summary}</p>}
+                            <div className="bg-[var(--color-surface-elevated)] border border-[var(--color-border)] rounded-lg p-3.5 mt-2">
+                              {task.summary && <p className="text-xs text-[var(--color-text-secondary)] mb-2.5">{task.summary}</p>}
                               
-                              <div className="flex flex-wrap gap-2 mb-3">
-                                {task.category && <span className="text-[10px] px-2 py-1 bg-[var(--color-purple-dim)] text-[var(--color-purple)] border border-[var(--color-purple)]/20 rounded">Category: {task.category}</span>}
-                                {task.priority && <span className="text-[10px] px-2 py-1 bg-[var(--color-purple-dim)] text-[var(--color-purple)] border border-[var(--color-purple)]/20 rounded">Priority: {task.priority}</span>}
-                                {task.ai_estimated_time && <span className="text-[10px] px-2 py-1 bg-[var(--color-purple-dim)] text-[var(--color-purple)] border border-[var(--color-purple)]/20 rounded flex items-center gap-1"><FiClock size={10} /> {task.ai_estimated_time}</span>}
+                              <div className="flex flex-wrap gap-1.5 mb-2.5">
+                                {task.category && <span className="text-[10px] px-2 py-0.5 border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] rounded">Category: {task.category}</span>}
+                                {task.priority && <span className="text-[10px] px-2 py-0.5 border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] rounded">Priority: {task.priority}</span>}
+                                {task.ai_estimated_time && <span className="text-[10px] px-2 py-0.5 border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] rounded flex items-center gap-1"><FiClock size={9} /> {task.ai_estimated_time}</span>}
                               </div>
 
                               {task.ai_actionable_steps && task.ai_actionable_steps.length > 0 && (
-                                <div className="mb-3">
-                                  <h4 className="text-[11px] font-semibold text-[var(--color-purple)] mb-1 uppercase tracking-wider">Actionable Steps</h4>
+                                <div className="mb-2.5">
+                                  <h4 className="text-[10px] font-semibold text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider">Actionable Steps</h4>
                                   <ul className="space-y-1">
                                     {task.ai_actionable_steps.map((step, idx) => (
                                       <li key={idx} className="text-xs text-[var(--color-text-secondary)] flex items-start gap-1.5">
-                                        <span className="text-[var(--color-purple)] mt-0.5">•</span> {step}
+                                        <span className="text-[var(--color-text-muted)] mt-0.5">•</span> {step}
                                       </li>
                                     ))}
                                   </ul>
@@ -554,7 +560,7 @@ export default function Dashboard() {
 
                               {task.ai_potential_roadblocks && (
                                 <div>
-                                  <h4 className="text-[11px] font-semibold text-[var(--color-purple)] mb-1 uppercase tracking-wider">Potential Roadblocks</h4>
+                                  <h4 className="text-[10px] font-semibold text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider">Potential Roadblocks</h4>
                                   <p className="text-xs text-[var(--color-text-secondary)]">{task.ai_potential_roadblocks}</p>
                                 </div>
                               )}

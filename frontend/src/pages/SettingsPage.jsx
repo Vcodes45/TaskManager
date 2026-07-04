@@ -8,13 +8,8 @@ import { useGoogleLogin } from '@react-oauth/google';
 import api from '../services/api';
 
 const themes = [
-  { id: 'dark', name: 'Dark Mode', color: '#0a0a0f' },
-  { id: 'light', name: 'Light Mode', color: '#f4f4f5' },
-  { id: 'amoled', name: 'AMOLED Black', color: '#000000' },
-  { id: 'ocean', name: 'Deep Ocean', color: '#083344' },
-  { id: 'purple', name: 'Nebula', color: '#2e1065' },
-  { id: 'forest', name: 'Midnight Forest', color: '#022c22' },
-  { id: 'sunset', name: 'Sunset', color: '#451a03' }
+  { id: 'light', name: 'Light Mode', color: '#ffffff' },
+  { id: 'dark', name: 'Dark Mode', color: '#191919' }
 ];
 
 export default function SettingsPage() {
@@ -48,9 +43,9 @@ export default function SettingsPage() {
 
   return (
     <div className="pb-12 max-w-5xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-primary)] to-[var(--color-text-secondary)]">Settings</h1>
-        <p className="text-[var(--color-text-secondary)] mt-1">Manage your account and preferences</p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Settings</h1>
+        <p className="text-[var(--color-text-secondary)] text-xs mt-0.5">Manage your account and preferences</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
@@ -71,8 +66,8 @@ export default function SettingsPage() {
                   : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-text-primary)]/5 hover:text-[var(--color-text-primary)] border border-transparent'
               }`}
             >
-              <tab.icon size={18} />
-              <span className="font-medium">{tab.label}</span>
+              <tab.icon size={16} />
+              <span className="font-semibold text-xs">{tab.label}</span>
             </button>
           ))}
         </div>
@@ -140,13 +135,13 @@ export default function SettingsPage() {
               <GlassCard>
                 <h2 className="text-xl font-bold mb-6">Profile Information</h2>
                 <div className="flex items-center gap-6 mb-8">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-purple-500 flex items-center justify-center text-3xl font-bold">
+                  <div className="w-16 h-16 rounded-full bg-[var(--color-surface-elevated)] border border-[var(--color-border)] flex items-center justify-center text-xl font-bold">
                     {user?.name?.charAt(0) || 'U'}
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold">{user?.name}</h3>
-                    <p className="text-[var(--color-text-secondary)]">{user?.email}</p>
-                    <span className="inline-block mt-2 text-xs px-2 py-1 bg-primary/20 text-primary rounded-full">
+                    <h3 className="text-xl font-bold">{user?.name}</h3>
+                    <p className="text-[var(--color-text-secondary)] text-xs">{user?.email}</p>
+                    <span className="inline-block mt-2 text-[10px] px-2 py-0.5 border border-[var(--color-border)] text-[var(--color-text-secondary)] rounded-full">
                       Premium Member
                     </span>
                   </div>

@@ -26,40 +26,18 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="parallax-auth min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
-         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1920&q=80')" }}>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--color-surface-elevated)]">
 
-      {/* Floating decorative images */}
-      <div className="auth-decoration auth-deco-1">
-        <img
-          src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&q=75"
-          alt=""
-          loading="lazy"
-        />
-      </div>
-      <div className="auth-decoration auth-deco-2">
-        <img
-          src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=400&q=75"
-          alt=""
-          loading="lazy"
-        />
-      </div>
-      <div className="auth-decoration auth-deco-3">
-        <img
-          src="https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=400&q=75"
-          alt=""
-          loading="lazy"
-        />
-      </div>
 
-      <div className="glass-strong rounded-2xl w-full max-w-sm p-8 animate-fade-in relative z-10">
+
+      <div className="border border-[var(--color-border)] bg-[var(--color-surface)] rounded-xl w-full max-w-sm p-8 relative z-10 shadow-sm">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-accent-dim flex items-center justify-center mx-auto mb-4 border border-[var(--color-border-light)] shadow-sm">
+          <div className="w-14 h-14 rounded-xl overflow-hidden flex items-center justify-center mx-auto mb-4 border border-[var(--color-border)] shadow-sm">
             <img src={logo} alt="Kal Se Logo" className="w-full h-full object-cover" />
           </div>
-          <h2 className="text-2xl font-bold text-text-primary mb-1">Welcome Back</h2>
-          <p className="text-text-muted text-sm">Sign in to your Kal Se account</p>
+          <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-1">Welcome Back</h2>
+          <p className="text-[var(--color-text-secondary)] text-xs">Sign in to your Kal Se account</p>
         </div>
 
         {error && (
@@ -71,7 +49,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="loginEmail" className="block text-sm font-medium text-text-secondary mb-1.5">
+            <label htmlFor="loginEmail" className="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5">
               Email
             </label>
             <input
@@ -85,7 +63,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="loginPassword" className="block text-sm font-medium text-text-secondary mb-1.5">
+            <label htmlFor="loginPassword" className="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5">
               Password
             </label>
             <input
@@ -101,7 +79,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-lg bg-accent text-surface font-semibold text-sm hover:bg-accent-hover transition-all duration-200 cursor-pointer border-none disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            className="w-full py-2 bg-[var(--color-accent)] text-white font-semibold text-xs rounded-lg hover:bg-[var(--color-accent-hover)] transition-all cursor-pointer border-none disabled:opacity-50 disabled:cursor-not-allowed mt-2 shadow-sm"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

@@ -69,10 +69,10 @@ export default function AnalyticsPage() {
 
 
   return (
-    <div className="space-y-8 pb-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-primary)] to-[var(--color-text-secondary)]">Analytics</h1>
-        <p className="text-[var(--color-text-secondary)] mt-1">Detailed productivity insights</p>
+    <div className="space-y-8 pb-12 max-w-6xl mx-auto">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Analytics</h1>
+        <p className="text-[var(--color-text-secondary)] text-xs mt-0.5">Detailed productivity insights</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -96,8 +96,8 @@ export default function AnalyticsPage() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#12121a', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                  itemStyle={{ color: 'white' }}
+                  contentStyle={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)', borderRadius: '6px' }}
+                  itemStyle={{ color: 'var(--color-text-primary)' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -116,13 +116,15 @@ export default function AnalyticsPage() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={weeklyOutputData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                <XAxis dataKey="name" stroke="rgba(255,255,255,0.3)" axisLine={false} tickLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.3)" axisLine={false} tickLine={false} allowDecimals={false} />
+                <XAxis dataKey="name" stroke="var(--color-text-secondary)" fontSize={11} axisLine={false} tickLine={false} />
+                <YAxis stroke="var(--color-text-secondary)" fontSize={11} axisLine={false} tickLine={false} allowDecimals={false} />
                 <Tooltip 
-                  cursor={{fill: 'rgba(255,255,255,0.05)'}}
-                  contentStyle={{ backgroundColor: '#12121a', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                  cursor={{fill: 'var(--color-surface-elevated)'}}
+                  contentStyle={{ backgroundColor: 'var(--color-surface)', borderColor: 'var(--color-border)', borderRadius: '6px' }}
+                  labelStyle={{ color: 'var(--color-text-primary)', fontWeight: 'bold' }}
+                  itemStyle={{ color: 'var(--color-text-primary)' }}
                 />
-                <Bar dataKey="tasks" fill="var(--color-primary)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="tasks" fill="var(--color-accent)" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -66,15 +66,15 @@ export default function TaskForm({ task = null, isEdit = false }) {
   };
 
   return (
-    <div className="glass-strong rounded-2xl p-6 sm:p-8 max-w-xl mx-auto animate-fade-in">
+    <div className="border border-[var(--color-border)] bg-[var(--color-surface)] rounded-xl p-6 sm:p-8 max-w-xl mx-auto shadow-sm">
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate('/')}
-          className="text-text-muted hover:text-text-primary transition-colors bg-transparent border-none cursor-pointer p-0"
+          className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors bg-transparent border-none cursor-pointer p-0"
         >
-          <FiArrowLeft size={20} />
+          <FiArrowLeft size={18} />
         </button>
-        <h2 className="text-xl font-bold text-text-primary m-0">
+        <h2 className="text-lg font-bold text-[var(--color-text-primary)] m-0">
           {isEdit ? 'Edit Task' : 'Create New Task'}
         </h2>
       </div>
@@ -88,8 +88,8 @@ export default function TaskForm({ task = null, isEdit = false }) {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="taskTitle" className="block text-sm font-medium text-text-secondary mb-1.5">
-            Title <span className="text-danger">*</span>
+          <label htmlFor="taskTitle" className="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5">
+            Title <span className="text-[var(--color-danger)]">*</span>
           </label>
           <input
             id="taskTitle"
@@ -103,7 +103,7 @@ export default function TaskForm({ task = null, isEdit = false }) {
         </div>
 
         <div>
-          <label htmlFor="taskDescription" className="block text-sm font-medium text-text-secondary mb-1.5">
+          <label htmlFor="taskDescription" className="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5">
             Description
           </label>
           <textarea
@@ -118,7 +118,7 @@ export default function TaskForm({ task = null, isEdit = false }) {
         </div>
 
         <div>
-          <label htmlFor="taskDueDate" className="block text-sm font-medium text-text-secondary mb-1.5">
+          <label htmlFor="taskDueDate" className="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5">
             Due Date
           </label>
           <input
@@ -131,7 +131,7 @@ export default function TaskForm({ task = null, isEdit = false }) {
         </div>
 
         <div>
-          <label htmlFor="taskPriority" className="block text-sm font-medium text-text-secondary mb-1.5">
+          <label htmlFor="taskPriority" className="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5">
             Priority
           </label>
           <select
@@ -148,7 +148,7 @@ export default function TaskForm({ task = null, isEdit = false }) {
 
         {isEdit && (
           <div>
-            <label htmlFor="taskStatus" className="block text-sm font-medium text-text-secondary mb-1.5">
+            <label htmlFor="taskStatus" className="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5">
               Status
             </label>
             <select
@@ -167,15 +167,15 @@ export default function TaskForm({ task = null, isEdit = false }) {
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-accent text-surface font-semibold text-sm hover:bg-accent-hover transition-all duration-200 cursor-pointer border-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--color-accent)] text-white font-semibold text-xs rounded-lg hover:bg-[var(--color-accent-hover)] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-0 shadow-sm border-none cursor-pointer"
           >
-            <FiSave size={15} />
+            <FiSave size={14} />
             {submitting ? 'Saving...' : isEdit ? 'Update Task' : 'Create Task'}
           </button>
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="px-5 py-2.5 rounded-lg border border-border-light text-text-secondary hover:text-text-primary hover:bg-[var(--color-text-primary)]/5 text-sm font-medium transition-all duration-200 cursor-pointer bg-transparent"
+            className="px-5 py-2 rounded-lg border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)] text-xs font-semibold transition-all cursor-pointer bg-transparent"
           >
             Cancel
           </button>

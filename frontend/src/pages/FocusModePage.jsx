@@ -158,24 +158,24 @@ export default function FocusModePage() {
       </AnimatePresence>
 
       {/* Timer Modes */}
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-2 bg-surface-elevated/50 p-2 rounded-2xl border border-[var(--color-border-light)] mb-8 sm:mb-12 glass w-full max-w-lg">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-2 bg-[var(--color-surface-elevated)] p-1.5 rounded-xl border border-[var(--color-border)] mb-8 sm:mb-12 w-full max-w-lg">
         <button 
           onClick={() => switchMode('focus')}
-          className={`flex items-center space-x-2 px-6 py-2 rounded-xl transition-all ${pomodoroState.mode === 'focus' ? 'bg-primary text-[var(--color-text-primary)] shadow-lg shadow-primary/20' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+          className={`flex items-center space-x-2 px-6 py-2 rounded-lg text-xs font-semibold transition-all ${pomodoroState.mode === 'focus' ? 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
         >
           <FiMonitor />
           <span>Focus</span>
         </button>
         <button 
           onClick={() => switchMode('shortBreak')}
-          className={`flex items-center space-x-2 px-6 py-2 rounded-xl transition-all ${pomodoroState.mode === 'shortBreak' ? 'bg-accent text-[var(--color-text-primary)] shadow-lg shadow-accent/20' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+          className={`flex items-center space-x-2 px-6 py-2 rounded-lg text-xs font-semibold transition-all ${pomodoroState.mode === 'shortBreak' ? 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
         >
           <FiCoffee />
           <span>Short Break</span>
         </button>
         <button 
           onClick={() => switchMode('longBreak')}
-          className={`flex items-center space-x-2 px-6 py-2 rounded-xl transition-all ${pomodoroState.mode === 'longBreak' ? 'bg-purple-500 text-[var(--color-text-primary)] shadow-lg shadow-purple-500/20' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
+          className={`flex items-center space-x-2 px-6 py-2 rounded-lg text-xs font-semibold transition-all ${pomodoroState.mode === 'longBreak' ? 'bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
         >
           <FiCoffee />
           <span>Long Break</span>
@@ -183,8 +183,8 @@ export default function FocusModePage() {
       </div>
 
       {/* Main Timer Display */}
-      <div className="relative flex items-center justify-center mb-8 sm:mb-12 w-full max-w-[360px] aspect-square mx-auto">
-        <svg viewBox="0 0 360 360" className="w-full h-full transform -rotate-90 filter drop-shadow-[0_0_30px_rgba(var(--color-primary),0.3)]">
+      <div className="relative flex items-center justify-center mb-8 sm:mb-12 w-full max-w-[320px] aspect-square mx-auto">
+        <svg viewBox="0 0 360 360" className="w-full h-full transform -rotate-90">
           <circle
             cx="180" cy="180" r={radius}
             stroke="rgba(255,255,255,0.05)"
@@ -208,9 +208,9 @@ export default function FocusModePage() {
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <motion.div 
             key={pomodoroState.timeLeft}
-            initial={{ scale: 0.9, opacity: 0.8 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="text-5xl sm:text-7xl font-bold font-mono tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-[var(--color-text-primary)] to-[var(--color-text-secondary)] drop-shadow-lg"
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 1 }}
+            className="text-6xl sm:text-7xl font-semibold font-mono tracking-tighter text-[var(--color-text-primary)]"
           >
             {formatTime(pomodoroState.timeLeft)}
           </motion.div>
@@ -229,27 +229,25 @@ export default function FocusModePage() {
         </motion.button>
         
         <motion.button
-          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={toggleTimer}
-          className={`p-6 rounded-full border-2 shadow-2xl transition-all ${
+          className={`p-4 rounded-full border shadow-sm transition-all ${
             pomodoroState.isRunning 
-              ? 'bg-surface-elevated border-[var(--color-border-light)] text-[var(--color-text-primary)]' 
-              : 'bg-primary border-primary text-[var(--color-text-primary)] shadow-primary/30'
+              ? 'bg-[var(--color-surface)] border-[var(--color-border)] text-[var(--color-text-primary)]' 
+              : 'bg-[var(--color-accent)] border-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]'
           }`}
         >
-          {pomodoroState.isRunning ? <FiPause size={32} /> : <FiPlay size={32} className="ml-1" />}
+          {pomodoroState.isRunning ? <FiPause size={24} /> : <FiPlay size={24} className="ml-0.5" />}
         </motion.button>
 
         <motion.button
-          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowSettings(!showSettings)}
-          className={`p-4 rounded-full border transition-colors ${
-            showSettings ? 'bg-primary/20 border-primary text-primary' : 'bg-surface-elevated border-[var(--color-border-light)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/5'
+          className={`p-3 rounded-full border transition-colors ${
+            showSettings ? 'bg-[var(--color-accent-dim)] border-[var(--color-accent)] text-[var(--color-accent)]' : 'bg-[var(--color-surface-elevated)] border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/5'
           }`}
         >
-          <FiSettings size={24} />
+          <FiSettings size={20} />
         </motion.button>
       </div>
 
@@ -262,8 +260,8 @@ export default function FocusModePage() {
             exit={{ opacity: 0, height: 0, y: -20 }}
             className="mt-8 overflow-hidden w-full max-w-md"
           >
-            <div className="glass bg-surface-elevated/80 border border-[var(--color-border-light)] p-6 rounded-2xl">
-              <h3 className="text-lg font-bold mb-4">Timer Settings (Minutes)</h3>
+            <div className="border border-[var(--color-border)] bg-[var(--color-surface)] p-6 rounded-xl shadow-sm">
+              <h3 className="text-sm font-bold mb-4">Timer Settings (Minutes)</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="text-[var(--color-text-secondary)]">Focus Duration</label>

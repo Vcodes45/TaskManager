@@ -60,7 +60,7 @@ function SortableTaskCard({ task, onClick }) {
       {...attributes}
       {...listeners}
       onClick={onClick}
-      className="p-4 rounded-xl mb-3 cursor-grab active:cursor-grabbing border bg-surface-elevated/80 border-[var(--color-border-light)] shadow-md hover:border-[var(--color-border-light)] glass group"
+      className="p-4 rounded-lg mb-3 cursor-grab active:cursor-grabbing border bg-[var(--color-surface)] border-[var(--color-border)] shadow-sm hover:border-[var(--color-text-secondary)] transition-colors group"
     >
       <div className="flex justify-between items-start mb-2">
         <span className={`text-xs px-2 py-1 rounded bg-[var(--color-text-primary)]/5 ${
@@ -114,7 +114,7 @@ function DroppableColumn({ columnId, tasks, onAddTask }) {
       
       <div 
         ref={setNodeRef} 
-        className="flex-1 glass bg-surface-elevated/40 border border-[var(--color-border-light)] rounded-2xl p-4 overflow-y-auto custom-scrollbar flex flex-col min-h-[200px]"
+        className="flex-1 bg-[var(--color-surface-elevated)] border border-[var(--color-border)] rounded-xl p-4 overflow-y-auto custom-scrollbar flex flex-col min-h-[200px]"
       >
         <SortableContext 
           id={columnId}
@@ -149,9 +149,9 @@ function DroppableColumn({ columnId, tasks, onAddTask }) {
         ) : (
           <button 
             onClick={() => setIsAdding(true)}
-            className="mt-2 w-full py-2 flex items-center justify-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/5 rounded-xl transition-colors border border-dashed border-transparent hover:border-[var(--color-border-light)]"
+            className="mt-2 w-full py-2 flex items-center justify-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-text-primary)]/5 rounded-lg transition-colors border border-dashed border-[var(--color-border)]"
           >
-            <FiPlus size={14} /> <span className="text-sm font-medium">Add Task</span>
+            <FiPlus size={14} /> <span className="text-xs font-semibold">Add Task</span>
           </button>
         )}
       </div>
@@ -317,8 +317,8 @@ export default function KanbanPage() {
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-text-primary)] to-[var(--color-text-secondary)]">Kanban Board</h1>
-          <p className="text-[var(--color-text-secondary)] mt-1">Drag and drop to move tasks</p>
+          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Kanban Board</h1>
+          <p className="text-[var(--color-text-secondary)] text-xs mt-0.5">Drag and drop to move tasks</p>
         </div>
       </div>
 
