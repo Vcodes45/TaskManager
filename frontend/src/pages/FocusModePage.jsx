@@ -158,7 +158,7 @@ export default function FocusModePage() {
       </AnimatePresence>
 
       {/* Timer Modes */}
-      <div className="flex space-x-2 bg-surface-elevated/50 p-2 rounded-2xl border border-[var(--color-border-light)] mb-12 glass">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-2 bg-surface-elevated/50 p-2 rounded-2xl border border-[var(--color-border-light)] mb-8 sm:mb-12 glass w-full max-w-lg">
         <button 
           onClick={() => switchMode('focus')}
           className={`flex items-center space-x-2 px-6 py-2 rounded-xl transition-all ${pomodoroState.mode === 'focus' ? 'bg-primary text-[var(--color-text-primary)] shadow-lg shadow-primary/20' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
@@ -183,8 +183,8 @@ export default function FocusModePage() {
       </div>
 
       {/* Main Timer Display */}
-      <div className="relative flex items-center justify-center mb-12">
-        <svg width="360" height="360" className="transform -rotate-90 filter drop-shadow-[0_0_30px_rgba(var(--color-primary),0.3)]">
+      <div className="relative flex items-center justify-center mb-8 sm:mb-12 w-full max-w-[360px] aspect-square mx-auto">
+        <svg viewBox="0 0 360 360" className="w-full h-full transform -rotate-90 filter drop-shadow-[0_0_30px_rgba(var(--color-primary),0.3)]">
           <circle
             cx="180" cy="180" r={radius}
             stroke="rgba(255,255,255,0.05)"
@@ -210,7 +210,7 @@ export default function FocusModePage() {
             key={pomodoroState.timeLeft}
             initial={{ scale: 0.9, opacity: 0.8 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="text-7xl font-bold font-mono tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-[var(--color-text-primary)] to-[var(--color-text-secondary)] drop-shadow-lg"
+            className="text-5xl sm:text-7xl font-bold font-mono tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-[var(--color-text-primary)] to-[var(--color-text-secondary)] drop-shadow-lg"
           >
             {formatTime(pomodoroState.timeLeft)}
           </motion.div>

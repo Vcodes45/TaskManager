@@ -403,7 +403,7 @@ export default function Dashboard() {
             >
               <div className="glass border border-primary/30 bg-primary/10 rounded-xl p-3 flex items-center justify-between">
                 <span className="text-sm font-medium">{selectedTasks.size} tasks selected</span>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
                   <button onClick={() => handleBulkAction('complete')} className="px-3 py-1.5 text-xs bg-[var(--color-success-dim)] text-[var(--color-success)] rounded-lg hover:bg-[var(--color-success-dim)] transition-colors flex items-center gap-2"><FiCheckCircle /> Complete</button>
                   <button onClick={() => handleBulkAction('archive')} className="px-3 py-1.5 text-xs bg-[var(--color-warning-dim)] text-[var(--color-warning)] rounded-lg hover:bg-[var(--color-warning-dim)] transition-colors flex items-center gap-2"><FiArchive /> Archive</button>
                   <button onClick={() => handleBulkAction('delete')} className="px-3 py-1.5 text-xs bg-[var(--color-danger-dim)] text-[var(--color-danger)] rounded-lg hover:bg-[var(--color-danger-dim)] transition-colors flex items-center gap-2"><FiTrash2 /> Delete</button>
@@ -447,7 +447,7 @@ export default function Dashboard() {
                     </button>
                   </div>
 
-                  <div className={`${viewMode === 'list' ? 'flex items-center flex-1 ml-10' : 'flex-1 mt-6'}`}>
+                  <div className={`${viewMode === 'list' ? 'flex items-center flex-1 ml-8 sm:ml-10' : 'flex-1 mt-6'}`}>
                     <button onClick={() => toggleStatus(task)} className={`shrink-0 ${viewMode === 'list' ? 'mr-4' : 'mb-3'}`}>
                       {task.status === 'Completed' ? <FiCheckCircle size={22} className="text-[var(--color-success)]" /> : <FiCircle size={22} className="text-[var(--color-text-secondary)] hover:text-primary transition-colors" />}
                     </button>
@@ -462,7 +462,7 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className={`flex items-center gap-3 ${viewMode === 'list' ? 'ml-4 shrink-0' : 'mt-4 pt-4 border-t border-[var(--color-border-light)] w-full justify-between'}`}>
+                  <div className={`flex items-center gap-3 ${viewMode === 'list' ? 'mt-3 sm:mt-0 ml-4 sm:ml-4 shrink-0 flex-wrap sm:flex-nowrap' : 'mt-4 pt-4 border-t border-[var(--color-border-light)] w-full justify-between'}`}>
                     <div className="flex items-center gap-2">
                       <span className={`text-[10px] px-2 py-1 rounded bg-[var(--color-text-primary)]/5 ${
                         task.priority === 'High' ? 'text-[var(--color-danger)]' : task.priority === 'Medium' ? 'text-[var(--color-warning)]' : 'text-[var(--color-success)]'

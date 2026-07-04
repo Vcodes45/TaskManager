@@ -77,13 +77,13 @@ export default function Sidebar() {
       <motion.aside
         initial={false}
         animate={{ 
-          width: isSidebarOpen ? 260 : 80,
-          x: isSidebarOpen ? 0 : (window.innerWidth < 1024 ? -100 : 0) // Hide entirely on mobile when closed
+          width: isSidebarOpen ? 260 : 80
         }}
         className={`fixed lg:sticky top-0 left-0 h-screen z-40
           glass bg-surface-elevated/80 border-r border-[var(--color-border-light)] 
           flex flex-col justify-between py-6 px-3
-          transition-all duration-300 ease-in-out
+          transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           ${!isSidebarOpen && 'lg:items-center'}`}
       >
         <div className="flex flex-col space-y-6">

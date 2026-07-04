@@ -99,7 +99,7 @@ function DroppableColumn({ columnId, tasks, onAddTask }) {
   };
 
   return (
-    <div className="flex-shrink-0 w-80 flex flex-col">
+    <div className="flex-shrink-0 w-[85vw] md:w-80 flex flex-col snap-center">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-lg flex items-center">
           {columnId === 'Todo' && <span className="w-2 h-2 rounded-full bg-gray-400 mr-2" />}
@@ -323,7 +323,7 @@ export default function KanbanPage() {
         </div>
       </div>
 
-      <div className="flex-1 flex space-x-6 overflow-x-auto pb-4 custom-scrollbar">
+      <div className="flex-1 flex space-x-6 overflow-x-auto pb-4 custom-scrollbar snap-x snap-mandatory">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}

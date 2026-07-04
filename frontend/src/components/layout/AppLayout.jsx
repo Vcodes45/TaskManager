@@ -56,7 +56,7 @@ export default function AppLayout({ children }) {
         className={`flex-1 relative z-10 transition-all duration-300 ease-in-out
           ${isSidebarOpen ? 'lg:pl-0' : 'lg:pl-0'}`} // Sidebar handles its own width in the flex container
       >
-        <div className="h-full overflow-y-auto overflow-x-hidden p-6 lg:p-10">
+        <div className="h-full overflow-y-auto overflow-x-hidden p-4 pt-20 lg:p-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
